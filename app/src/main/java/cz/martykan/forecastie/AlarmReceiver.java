@@ -30,6 +30,7 @@ import java.net.URLEncoder;
 import cz.martykan.forecastie.activities.MainActivity;
 import cz.martykan.forecastie.notifications.WeatherNotificationService;
 import cz.martykan.forecastie.utils.Language;
+import cz.martykan.forecastie.weatherapi.WeatherStorage;
 import cz.martykan.forecastie.widgets.AbstractWidgetProvider;
 
 public class AlarmReceiver extends BroadcastReceiver {

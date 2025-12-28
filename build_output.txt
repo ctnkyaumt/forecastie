@@ -1,0 +1,540 @@
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/fragments/AmbiguousLocationDialogFragment.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+> Task :app:compileDebugJavaWithJavac
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/LocationsRecyclerAdapter.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/weatherapi/WeatherStorage.java:5: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:13: warning: [deprecation] NetworkInfo in android.net has been deprecated
+import android.net.NetworkInfo;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:14: warning: [deprecation] AsyncTask in android.os has been deprecated
+import android.os.AsyncTask;
+                 ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:17: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:4: warning: [deprecation] ProgressDialog in android.app has been deprecated
+import android.app.ProgressDialog;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:8: warning: [deprecation] AsyncTask in android.os has been deprecated
+import android.os.AsyncTask;
+                 ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:10: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:4: warning: [deprecation] ProgressDialog in android.app has been deprecated
+import android.app.ProgressDialog;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:15: warning: [deprecation] NetworkInfo in android.net has been deprecated
+import android.net.NetworkInfo;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:17: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/BaseActivity.java:6: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/WeatherRecyclerAdapter.java:7: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/notifications/repository/WeatherRepository.java:7: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/TimeWidgetProvider.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/AbstractWidgetProvider.java:14: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/ExtensiveWidgetProvider.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/ClassicTimeWidgetProvider.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/SimpleWidgetProvider.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SplashActivity.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:13: warning: [deprecation] CheckBoxPreference in android.preference has been deprecated
+import android.preference.CheckBoxPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:14: warning: [deprecation] EditTextPreference in android.preference has been deprecated
+import android.preference.EditTextPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:15: warning: [deprecation] ListPreference in android.preference has been deprecated
+import android.preference.ListPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:16: warning: [deprecation] Preference in android.preference has been deprecated
+import android.preference.Preference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:17: warning: [deprecation] PreferenceActivity in android.preference has been deprecated
+import android.preference.PreferenceActivity;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:18: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/GraphActivity.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/fragments/AmbiguousLocationDialogFragment.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/LocationsRecyclerAdapter.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/weatherapi/WeatherStorage.java:5: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:13: warning: [deprecation] NetworkInfo in android.net has been deprecated
+import android.net.NetworkInfo;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:14: warning: [deprecation] AsyncTask in android.os has been deprecated
+import android.os.AsyncTask;
+                 ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:17: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:4: warning: [deprecation] ProgressDialog in android.app has been deprecated
+import android.app.ProgressDialog;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:8: warning: [deprecation] AsyncTask in android.os has been deprecated
+import android.os.AsyncTask;
+                 ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:10: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:4: warning: [deprecation] ProgressDialog in android.app has been deprecated
+import android.app.ProgressDialog;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:15: warning: [deprecation] NetworkInfo in android.net has been deprecated
+import android.net.NetworkInfo;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:17: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/BaseActivity.java:6: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/WeatherRecyclerAdapter.java:7: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/notifications/repository/WeatherRepository.java:7: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/TimeWidgetProvider.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/AbstractWidgetProvider.java:14: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/ExtensiveWidgetProvider.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/ClassicTimeWidgetProvider.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/SimpleWidgetProvider.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SplashActivity.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:13: warning: [deprecation] CheckBoxPreference in android.preference has been deprecated
+import android.preference.CheckBoxPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:14: warning: [deprecation] EditTextPreference in android.preference has been deprecated
+import android.preference.EditTextPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:15: warning: [deprecation] ListPreference in android.preference has been deprecated
+import android.preference.ListPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:16: warning: [deprecation] Preference in android.preference has been deprecated
+import android.preference.Preference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:17: warning: [deprecation] PreferenceActivity in android.preference has been deprecated
+import android.preference.PreferenceActivity;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:18: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/GraphActivity.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/fragments/AmbiguousLocationDialogFragment.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/LocationsRecyclerAdapter.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/weatherapi/WeatherStorage.java:5: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:13: warning: [deprecation] NetworkInfo in android.net has been deprecated
+import android.net.NetworkInfo;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:14: warning: [deprecation] AsyncTask in android.os has been deprecated
+import android.os.AsyncTask;
+                 ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:17: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:4: warning: [deprecation] ProgressDialog in android.app has been deprecated
+import android.app.ProgressDialog;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:8: warning: [deprecation] AsyncTask in android.os has been deprecated
+import android.os.AsyncTask;
+                 ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:10: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:4: warning: [deprecation] ProgressDialog in android.app has been deprecated
+import android.app.ProgressDialog;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:15: warning: [deprecation] NetworkInfo in android.net has been deprecated
+import android.net.NetworkInfo;
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:17: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/BaseActivity.java:6: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/WeatherRecyclerAdapter.java:7: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/notifications/repository/WeatherRepository.java:7: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/TimeWidgetProvider.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/AbstractWidgetProvider.java:14: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/ExtensiveWidgetProvider.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/ClassicTimeWidgetProvider.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/SimpleWidgetProvider.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SplashActivity.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:13: warning: [deprecation] CheckBoxPreference in android.preference has been deprecated
+import android.preference.CheckBoxPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:14: warning: [deprecation] EditTextPreference in android.preference has been deprecated
+import android.preference.EditTextPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:15: warning: [deprecation] ListPreference in android.preference has been deprecated
+import android.preference.ListPreference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:16: warning: [deprecation] Preference in android.preference has been deprecated
+import android.preference.Preference;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:17: warning: [deprecation] PreferenceActivity in android.preference has been deprecated
+import android.preference.PreferenceActivity;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:18: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/GraphActivity.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+import android.preference.PreferenceManager;
+                         ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/Language.java:15: warning: [deprecation] Locale(String) in Locale has been deprecated
+        if (language.equals(new Locale("cs").getLanguage())) { // Czech
+                            ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/Language.java:17: warning: [deprecation] Locale(String) in Locale has been deprecated
+        } else if (language.equals(new Locale("ko").getLanguage())) { // Korean
+                                   ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/Language.java:19: warning: [deprecation] Locale(String) in Locale has been deprecated
+        } else if (language.equals(new Locale("lv").getLanguage())) { // Latvian
+                                   ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/UI.java:34: warning: [deprecation] setStatusBarColor(int) in Window has been deprecated
+            window.setStatusBarColor(android.graphics.Color.TRANSPARENT);
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/UI.java:39: warning: [deprecation] setNavigationBarColor(int) in Window has been deprecated
+            window.setNavigationBarColor(android.graphics.Color.TRANSPARENT);
+                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/formatters/WeatherFormatter.java:327: warning: [deprecation] ARGB_4444 in Config has been deprecated
+        Bitmap myBitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
+                                                                     ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/formatters/WeatherFormatter.java:358: warning: [deprecation] ARGB_4444 in Config has been deprecated
+        final Bitmap bitmap = Bitmap.createBitmap((int) size, (int) size, Bitmap.Config.ARGB_4444);
+                                                                                       ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/fragments/AmbiguousLocationDialogFragment.java:67: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/fragments/AmbiguousLocationDialogFragment.java:67: warning: [deprecation] getDefaultSharedPreferences(Context) in PreferenceManager has been deprecated
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                             ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/LocationsRecyclerAdapter.java:47: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                              ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/LocationsRecyclerAdapter.java:47: warning: [deprecation] getDefaultSharedPreferences(Context) in PreferenceManager has been deprecated
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                                               ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/weatherapi/WeatherStorage.java:22: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                 ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/weatherapi/WeatherStorage.java:22: warning: [deprecation] getDefaultSharedPreferences(Context) in PreferenceManager has been deprecated
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                                  ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:50: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                                   ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:50: warning: [deprecation] getDefaultSharedPreferences(Context) in PreferenceManager has been deprecated
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                                                    ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:60: warning: [deprecation] CONNECTIVITY_ACTION in ConnectivityManager has been deprecated
+        } else if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                                      ^
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:117: error: cannot find symbol
+                WeatherStorage weatherStorage = new WeatherStorage(context);
+                ^
+  symbol:   class WeatherStorage
+  location: class AlarmReceiver.GetWeatherTask
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:117: error: cannot find symbol
+                WeatherStorage weatherStorage = new WeatherStorage(context);
+                                                    ^
+  symbol:   class WeatherStorage
+  location: class AlarmReceiver.GetWeatherTask
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:170: error: cannot find symbol
+                WeatherStorage weatherStorage = new WeatherStorage(context);
+                ^
+  symbol:   class WeatherStorage
+  location: class AlarmReceiver.GetLongTermWeatherTask
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:170: error: cannot find symbol
+                WeatherStorage weatherStorage = new WeatherStorage(context);
+                                                    ^
+  symbol:   class WeatherStorage
+  location: class AlarmReceiver.GetLongTermWeatherTask
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:689: error: cannot find symbol
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            ^
+  symbol:   class Geocoder
+  location: class MainActivity
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:689: error: cannot find symbol
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                                    ^
+  symbol:   class Geocoder
+  location: class MainActivity
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:689: error: cannot find symbol
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                                                   ^
+  symbol:   variable Locale
+  location: class MainActivity
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:690: error: cannot find symbol
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                 ^
+  symbol:   class Address
+  location: class MainActivity
+/home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:697: error: cannot find symbol
+        } catch (IOException e) {
+                 ^
+  symbol:   class IOException
+  location: class MainActivity
+Note: Some input files additionally use or override a deprecated API.
+9 errors
+100 warnings
+> Task :app:compileDebugJavaWithJavac FAILED
+[Incubating] Problems report is available at: file:///home/runner/work/forecastie/forecastie/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':app:compileDebugJavaWithJavac'.
+> Compilation failed; see the compiler output below.
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/fragments/AmbiguousLocationDialogFragment.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/LocationsRecyclerAdapter.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/weatherapi/WeatherStorage.java:5: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:13: warning: [deprecation] NetworkInfo in android.net has been deprecated
+  import android.net.NetworkInfo;
+                    ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:14: warning: [deprecation] AsyncTask in android.os has been deprecated
+  import android.os.AsyncTask;
+                   ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:17: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:4: warning: [deprecation] ProgressDialog in android.app has been deprecated
+  import android.app.ProgressDialog;
+                    ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:8: warning: [deprecation] AsyncTask in android.os has been deprecated
+  import android.os.AsyncTask;
+                   ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/tasks/GenericRequestTask.java:10: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:4: warning: [deprecation] ProgressDialog in android.app has been deprecated
+  import android.app.ProgressDialog;
+                    ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:15: warning: [deprecation] NetworkInfo in android.net has been deprecated
+  import android.net.NetworkInfo;
+                    ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:17: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/BaseActivity.java:6: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/WeatherRecyclerAdapter.java:7: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/notifications/repository/WeatherRepository.java:7: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/TimeWidgetProvider.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/AbstractWidgetProvider.java:14: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/ExtensiveWidgetProvider.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/ClassicTimeWidgetProvider.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/widgets/SimpleWidgetProvider.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SplashActivity.java:9: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:13: warning: [deprecation] CheckBoxPreference in android.preference has been deprecated
+  import android.preference.CheckBoxPreference;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:14: warning: [deprecation] EditTextPreference in android.preference has been deprecated
+  import android.preference.EditTextPreference;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:15: warning: [deprecation] ListPreference in android.preference has been deprecated
+  import android.preference.ListPreference;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:16: warning: [deprecation] Preference in android.preference has been deprecated
+  import android.preference.Preference;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:17: warning: [deprecation] PreferenceActivity in android.preference has been deprecated
+  import android.preference.PreferenceActivity;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/SettingsActivity.java:18: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/GraphActivity.java:8: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+  import android.preference.PreferenceManager;
+                           ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/Language.java:15: warning: [deprecation] Locale(String) in Locale has been deprecated
+          if (language.equals(new Locale("cs").getLanguage())) { // Czech
+                              ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/Language.java:17: warning: [deprecation] Locale(String) in Locale has been deprecated
+          } else if (language.equals(new Locale("ko").getLanguage())) { // Korean
+                                     ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/Language.java:19: warning: [deprecation] Locale(String) in Locale has been deprecated
+          } else if (language.equals(new Locale("lv").getLanguage())) { // Latvian
+                                     ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/UI.java:34: warning: [deprecation] setStatusBarColor(int) in Window has been deprecated
+              window.setStatusBarColor(android.graphics.Color.TRANSPARENT);
+                    ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/UI.java:39: warning: [deprecation] setNavigationBarColor(int) in Window has been deprecated
+              window.setNavigationBarColor(android.graphics.Color.TRANSPARENT);
+                    ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/formatters/WeatherFormatter.java:327: warning: [deprecation] ARGB_4444 in Config has been deprecated
+          Bitmap myBitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
+                                                                       ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/utils/formatters/WeatherFormatter.java:358: warning: [deprecation] ARGB_4444 in Config has been deprecated
+          final Bitmap bitmap = Bitmap.createBitmap((int) size, (int) size, Bitmap.Config.ARGB_4444);
+                                                                                         ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/fragments/AmbiguousLocationDialogFragment.java:67: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+          sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                              ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/fragments/AmbiguousLocationDialogFragment.java:67: warning: [deprecation] getDefaultSharedPreferences(Context) in PreferenceManager has been deprecated
+          sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                               ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/LocationsRecyclerAdapter.java:47: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+          SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                                ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/adapters/LocationsRecyclerAdapter.java:47: warning: [deprecation] getDefaultSharedPreferences(Context) in PreferenceManager has been deprecated
+          SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                                                 ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/weatherapi/WeatherStorage.java:22: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+          this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                   ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/weatherapi/WeatherStorage.java:22: warning: [deprecation] getDefaultSharedPreferences(Context) in PreferenceManager has been deprecated
+          this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                                                    ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:50: warning: [deprecation] PreferenceManager in android.preference has been deprecated
+              SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                                     ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:50: warning: [deprecation] getDefaultSharedPreferences(Context) in PreferenceManager has been deprecated
+              SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                                                      ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:60: warning: [deprecation] CONNECTIVITY_ACTION in ConnectivityManager has been deprecated
+          } else if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                                        ^
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:117: error: cannot find symbol
+                  WeatherStorage weatherStorage = new WeatherStorage(context);
+                  ^
+    symbol:   class WeatherStorage
+    location: class AlarmReceiver.GetWeatherTask
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:117: error: cannot find symbol
+                  WeatherStorage weatherStorage = new WeatherStorage(context);
+                                                      ^
+    symbol:   class WeatherStorage
+    location: class AlarmReceiver.GetWeatherTask
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:170: error: cannot find symbol
+                  WeatherStorage weatherStorage = new WeatherStorage(context);
+                  ^
+    symbol:   class WeatherStorage
+    location: class AlarmReceiver.GetLongTermWeatherTask
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/AlarmReceiver.java:170: error: cannot find symbol
+                  WeatherStorage weatherStorage = new WeatherStorage(context);
+                                                      ^
+    symbol:   class WeatherStorage
+    location: class AlarmReceiver.GetLongTermWeatherTask
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:689: error: cannot find symbol
+              Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+              ^
+    symbol:   class Geocoder
+    location: class MainActivity
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:689: error: cannot find symbol
+              Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                                      ^
+    symbol:   class Geocoder
+    location: class MainActivity
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:689: error: cannot find symbol
+              Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                                                     ^
+    symbol:   variable Locale
+    location: class MainActivity
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:690: error: cannot find symbol
+              List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                   ^
+    symbol:   class Address
+    location: class MainActivity
+  /home/runner/work/forecastie/forecastie/app/src/main/java/cz/martykan/forecastie/activities/MainActivity.java:697: error: cannot find symbol
+          } catch (IOException e) {
+                   ^
+    symbol:   class IOException
+    location: class MainActivity
+  Note: Some input files additionally use or override a deprecated API.
+  9 errors
+  100 warnings
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights.
+BUILD FAILED in 1m 42s
+21 actionable tasks: 21 executed
