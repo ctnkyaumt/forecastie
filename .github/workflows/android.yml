@@ -1,38 +1,61 @@
 name: Build and release
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: set up JDK 17
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
-    - name: Build with Gradle
-      run: |
-        ./gradlew build
-        cp /home/runner/work/forecastie/forecastie/app/build/outputs/apk/release/app-release-unsigned.apk /home/runner/work/forecastie/forecastie/forecastie.apk
-        pwd > file_list.txt
-        ls -lR >> file_list.txt
+        distribution: 'temurin'
+        cache: gradle
 
-    - name: Upload .apk
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build APK
+      run: ./gradlew assembleDebug
+
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: Forecastie
-        path: forecastie.apk
+        name: Forecastie-Debug
+        path: app/build/outputs/apk/debug/*.apk
 
   release:
     runs-on: ubuntu-latest
     needs: [build]
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
+      - uses: actions/checkout@v4
+      
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
       - name: Release
-        uses: fnkr/github-action-ghr@v1.3
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/release/*.apk
         env:
-          GHR_PATH: /github/workspace/forecastie.apk
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     #- name: Download
