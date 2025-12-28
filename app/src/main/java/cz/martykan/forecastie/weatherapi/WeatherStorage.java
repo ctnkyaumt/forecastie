@@ -13,7 +13,7 @@ import java.util.List;
 
 import cz.martykan.forecastie.Constants;
 import cz.martykan.forecastie.models.Weather;
-import cz.martykan.forecastie.weatherapi.owm.OpenWeatherMapJsonParser;
+import cz.martykan.forecastie.weatherapi.OpenMeteoJsonParser;
 
 public class WeatherStorage {
     protected SharedPreferences sharedPreferences;
@@ -40,7 +40,7 @@ public class WeatherStorage {
         }
 
         try {
-            return OpenWeatherMapJsonParser.convertJsonToWeather(lastToday);
+            return OpenMeteoJsonParser.convertJsonToWeather(lastToday);
         } catch (JSONException e) {
             Log.e("WeatherStorage", "Could not parse today JSON", e);
             e.printStackTrace();
@@ -60,7 +60,7 @@ public class WeatherStorage {
         }
 
         try {
-            return OpenWeatherMapJsonParser.convertJsonToWeatherList(lastLongTerm);
+            return OpenMeteoJsonParser.convertJsonToWeatherList(lastLongTerm);
         } catch (JSONException e) {
             Log.e("WeatherStorage", "Could not parse long term JSON", e);
             e.printStackTrace();
@@ -81,7 +81,7 @@ public class WeatherStorage {
         }
 
         try {
-            return OpenWeatherMapJsonParser.convertJsonToUVIndex(lastUviToday);
+            return OpenMeteoJsonParser.convertJsonToUVIndex(lastUviToday);
         } catch (JSONException e) {
             Log.e("WeatherStorage", "Could not parse UV index JSON", e);
             e.printStackTrace();
@@ -127,6 +127,13 @@ public class WeatherStorage {
 
     public void setLongitude(double longitude) {
         this.sharedPreferences.edit().putFloat("longitude", (float) longitude).apply();
+    }
 
+    public void setCity(String city) {
+        this.sharedPreferences.edit().putString("city", city).apply();
+    }
+
+    public void setCountry(String country) {
+        this.sharedPreferences.edit().putString("country", country).apply();
     }
 }

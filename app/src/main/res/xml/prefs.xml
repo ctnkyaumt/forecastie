@@ -88,11 +88,6 @@
             android:key="refreshInterval"
             android:title="@string/setting_refreshInterval" />
 
-        <EditTextPreference
-            android:key="apiKey"
-            android:summary="@string/setting_apiKey_summary"
-            android:title="@string/setting_apiKey" />
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_title_location">

@@ -74,9 +74,6 @@ public class LocationsRecyclerAdapter extends RecyclerView.Adapter<LocationsRecy
             holder.temperatureTextView.setText(new DecimalFormat("#.#").format(weather.getTemperature()) + " " + this.temperatureUnit);
         }
 
-        holder.webView.getSettings().setJavaScriptEnabled(true);
-        holder.webView.loadUrl("file:///android_asset/map.html?lat=" + weather.getLat()+ "&lon=" + weather.getLon() + "&zoom=" + 10 + "&appid=notneeded&displayPin=true");
-
         if (darkTheme || blackTheme) {
             holder.cityTextView.setTextColor(Color.WHITE);
             holder.temperatureTextView.setTextColor(Color.WHITE);
@@ -103,7 +100,6 @@ public class LocationsRecyclerAdapter extends RecyclerView.Adapter<LocationsRecy
         private TextView temperatureTextView;
         private TextView descriptionTextView;
         private TextView iconTextView;
-        private WebView webView;
         private CardView cardView;
 
         LocationsViewHolder(View itemView) {
@@ -113,7 +109,6 @@ public class LocationsRecyclerAdapter extends RecyclerView.Adapter<LocationsRecy
             temperatureTextView = itemView.findViewById(R.id.rowTemperatureTextView);
             descriptionTextView = itemView.findViewById(R.id.rowDescriptionTextView);
             iconTextView = itemView.findViewById(R.id.rowIconTextView);
-            webView = itemView.findViewById(R.id.webView2);
             cardView = itemView.findViewById(R.id.rowCardView);
 
             itemView.setOnClickListener(this);

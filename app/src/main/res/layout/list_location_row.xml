@@ -69,7 +69,8 @@
             app:layout_constraintStart_toStartOf="@+id/rowCityTextView"
             app:layout_constraintEnd_toStartOf="@+id/rowIconTextView"
             app:layout_constraintTop_toBottomOf="@+id/rowTemperatureTextView"
-            app:layout_constraintBottom_toTopOf="@+id/webView2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="16dp"
             tools:text="TextView"/>
 
         <TextView
@@ -87,15 +88,8 @@
             app:layout_constraintStart_toEndOf="@+id/textViewsBarrier"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/webView2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="16dp"
             tools:text="C"/>
-
-        <WebView
-            android:id="@+id/webView2"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/rowDescriptionTextView"
-            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

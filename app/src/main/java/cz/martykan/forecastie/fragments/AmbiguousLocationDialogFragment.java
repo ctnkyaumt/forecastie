@@ -92,29 +92,20 @@ public class AmbiguousLocationDialogFragment extends DialogFragment implements L
 
             for (int i = 0; i < cityListArray.length(); i++) {
                 final JSONObject cityObject = cityListArray.getJSONObject(i);
-                final JSONObject weatherObject = cityObject.getJSONArray("weather").getJSONObject(0);
-                final JSONObject mainObject = cityObject.getJSONObject("main");
-                final JSONObject coordObject = cityObject.getJSONObject("coord");
-                final JSONObject sysObject = cityObject.getJSONObject("sys");
 
                 final String city = cityObject.getString("name");
-                final String country = sysObject.getString("country");
+                final String country = cityObject.optString("country", "");
                 final int cityId = cityObject.getInt("id");
-                final String description = weatherObject.getString("description");
-                final int weatherId = weatherObject.getInt("id");
-                final float temperature = UnitConvertor.convertTemperature((float) mainObject.getDouble("temp"), sharedPreferences);
-                final double lat = coordObject.getDouble("lat");
-                final double lon = coordObject.getDouble("lon");
+                final double lat = cityObject.getDouble("latitude");
+                final double lon = cityObject.getDouble("longitude");
 
                 Weather weather = new Weather();
                 weather.setCity(city);
                 weather.setCityId(cityId);
                 weather.setCountry(country);
-                weather.setWeatherId(weatherId);
-                weather.setDescription(description.substring(0, 1).toUpperCase() + description.substring(1));
-                weather.setTemperature(temperature);
                 weather.setLat(lat);
                 weather.setLon(lon);
+                weather.setDescription(cityObject.optString("admin1", "")); // Use admin area as description
 
                 weatherArrayList.add(weather);
             }

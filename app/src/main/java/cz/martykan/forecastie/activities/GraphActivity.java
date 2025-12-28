@@ -37,7 +37,7 @@ import cz.martykan.forecastie.models.Weather;
 import cz.martykan.forecastie.tasks.ParseResult;
 import cz.martykan.forecastie.utils.UI;
 import cz.martykan.forecastie.utils.UnitConvertor;
-import cz.martykan.forecastie.weatherapi.owm.OpenWeatherMapJsonParser;
+import cz.martykan.forecastie.weatherapi.OpenMeteoJsonParser;
 
 public class GraphActivity extends BaseActivity {
 
@@ -376,7 +376,7 @@ public class GraphActivity extends BaseActivity {
 
     public ParseResult parseLongTermJson(String result) {
         try {
-            List<Weather> parsedWeatherList = OpenWeatherMapJsonParser.convertJsonToWeatherList(result);
+            List<Weather> parsedWeatherList = OpenMeteoJsonParser.convertJsonToWeatherList(result);
             weatherList.addAll(parsedWeatherList);
         } catch (JSONException e) {
             Log.e("JSONException Data", result);

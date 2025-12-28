@@ -15,17 +15,11 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
 
 import cz.martykan.forecastie.Constants;
 import cz.martykan.forecastie.R;
 import cz.martykan.forecastie.activities.MainActivity;
 import cz.martykan.forecastie.utils.Language;
-import cz.martykan.forecastie.utils.certificate.CertificateUtils;
 import cz.martykan.forecastie.weatherapi.WeatherStorage;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,10 +33,7 @@ public abstract class GenericRequestTask extends AsyncTask<String, String, TaskO
     protected Context context;
     protected MainActivity activity;
     protected WeatherStorage weatherStorage;
-    private static CountDownLatch certificateCountDownLatch = new CountDownLatch(0);
-    private static boolean certificateTried = false;
-    private static boolean certificateFetchTried = false;
-    private static SSLContext sslContext;
+
     
     private OkHttpClient okHttpClient;
 
@@ -78,16 +69,10 @@ public abstract class GenericRequestTask extends AsyncTask<String, String, TaskO
             }
         }
 
-        TaskOutput requestOutput = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP
-            ? makeRequest(reqParams)
-            : makeRequestWithCheckForCertificate(reqParams);
+        TaskOutput requestOutput = makeRequest(reqParams);
 
         if (TaskResult.SUCCESS.equals(requestOutput .taskResult)) {
             requestOutput.parseResult = parseResponse(requestOutput.response);
-            if (ParseResult.CITY_NOT_FOUND.equals(requestOutput.parseResult)) {
-                // Retain previously specified city if current one was not recognized
-                restorePreviousCity();
-            }
         }
 
         return requestOutput ;
@@ -135,44 +120,6 @@ public abstract class GenericRequestTask extends AsyncTask<String, String, TaskO
         return output;
     }
 
-    private TaskOutput makeRequestWithCheckForCertificate(String[] reqParams) {
-        TaskOutput output = new TaskOutput();
-        boolean tryAgain = false;
-        String response = "";
-        do {
-            output = makeRequest(reqParams);
-            if (output.taskResult == TaskResult.IO_EXCEPTION && output.taskError instanceof IOException) {
-                if (CertificateUtils.isCertificateException((IOException) output.taskError)) {
-                    Log.e("Invalid Certificate", output.taskError.getMessage());
-                    try {
-                        certificateCountDownLatch.await();
-                        tryAgain = !certificateTried || !certificateFetchTried;
-                        if (tryAgain) {
-                            AtomicBoolean doNotRetry = new AtomicBoolean(false);
-                            sslContext = CertificateUtils.addCertificate(context, doNotRetry,
-                                    certificateTried);
-                            certificateTried = true;
-                            if (!certificateFetchTried) {
-                                certificateFetchTried = doNotRetry.get();
-                            }
-                            tryAgain = sslContext != null;
-                        }
-                        certificateCountDownLatch.countDown();
-                    } catch (InterruptedException ex) {
-                        Log.e("Invalid Certificate", "await had been interrupted");
-                        ex.printStackTrace();
-                    }
-                } else {
-                    Log.e("IOException Data", response);
-                    tryAgain = false;
-                }
-            } else {
-                tryAgain = false;
-            }
-        } while (tryAgain);
-        return output;
-    }
-
     @Override
     protected void onPostExecute(TaskOutput output) {
         if (progressDialog.isShowing()) {
@@ -211,40 +158,42 @@ public abstract class GenericRequestTask extends AsyncTask<String, String, TaskO
 
     private URL provideURL(String[] reqParams) throws MalformedURLException {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        String apiKey = sp.getString("apiKey", context.getString(R.string.apiKey));
 
-        Uri.Builder uriBuilder = new Uri.Builder()
-            .scheme("https")
-            .authority("api.openweathermap.org")
-            .path("/data/2.5/" + getAPIName());
-        
-        if (reqParams.length > 0) {
-            final String zeroParam = reqParams[0];
-            if ("coords".equals(zeroParam)) {
-                uriBuilder.appendQueryParameter("lat", reqParams[1]);
-                uriBuilder.appendQueryParameter("lon", reqParams[2]);
-            } else if ("city".equals(zeroParam)) {
-                uriBuilder.appendQueryParameter("q", reqParams[1]);
+        Uri.Builder uriBuilder = new Uri.Builder().scheme("https");
+
+        String apiName = getAPIName();
+        if ("find".equals(apiName)) {
+            uriBuilder.authority("geocoding-api.open-meteo.com")
+                    .path("/v1/search");
+            if (reqParams.length > 0 && "city".equals(reqParams[0])) {
+                uriBuilder.appendQueryParameter("name", reqParams[1]);
             }
+            uriBuilder.appendQueryParameter("count", "10");
+            uriBuilder.appendQueryParameter("language", Language.getLanguageCode());
+            uriBuilder.appendQueryParameter("format", "json");
         } else {
-            final String cityId = sp.getString("cityId", Constants.DEFAULT_CITY_ID);
-            uriBuilder.appendQueryParameter("id", cityId);
-        }
-        
-        // Add common parameters
-        uriBuilder.appendQueryParameter("lang", Language.getOwmLanguage());
-        uriBuilder.appendQueryParameter("mode", "json");
-        uriBuilder.appendQueryParameter("appid", apiKey);
-        
-        return new URL(uriBuilder.build().toString());
-    }
+            uriBuilder.authority("api.open-meteo.com")
+                    .path("/v1/forecast");
 
-    @SuppressLint("ApplySharedPref")
-    private void restorePreviousCity() {
-        if (activity.recentCityId != null) {
-            weatherStorage.setCityId(activity.recentCityId);
-            activity.recentCityId = null;
+            String lat, lon;
+            if (reqParams.length > 0 && "coords".equals(reqParams[0])) {
+                lat = reqParams[1];
+                lon = reqParams[2];
+            } else {
+                lat = Double.toString(weatherStorage.getLatitude(Constants.DEFAULT_LAT));
+                lon = Double.toString(weatherStorage.getLongitude(Constants.DEFAULT_LON));
+            }
+
+            uriBuilder.appendQueryParameter("latitude", lat);
+            uriBuilder.appendQueryParameter("longitude", lon);
+            uriBuilder.appendQueryParameter("current_weather", "true");
+            uriBuilder.appendQueryParameter("hourly", "temperature_2m,relativehumidity_2m,apparent_temperature,weathercode,pressure_msl,windspeed_10m,winddirection_10m,rain,snowfall,precipitation_probability");
+            uriBuilder.appendQueryParameter("daily", "sunrise,sunset,uv_index_max");
+            uriBuilder.appendQueryParameter("timezone", "auto");
+            uriBuilder.appendQueryParameter("timeformat", "unixtime");
         }
+
+        return new URL(uriBuilder.build().toString());
     }
 
     protected void updateMainUI() {

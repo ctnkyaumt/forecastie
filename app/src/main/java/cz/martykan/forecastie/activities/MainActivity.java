@@ -71,7 +71,7 @@ import cz.martykan.forecastie.utils.TimeUtils;
 import cz.martykan.forecastie.utils.UI;
 import cz.martykan.forecastie.utils.UnitConvertor;
 import cz.martykan.forecastie.weatherapi.WeatherStorage;
-import cz.martykan.forecastie.weatherapi.owm.OpenWeatherMapJsonParser;
+import cz.martykan.forecastie.weatherapi.OpenMeteoJsonParser;
 import cz.martykan.forecastie.widgets.AbstractWidgetProvider;
 
 public class MainActivity extends BaseActivity implements LocationListener {
@@ -114,8 +114,6 @@ public class MainActivity extends BaseActivity implements LocationListener {
     private boolean firstRun;
 
     private final LongTermWeatherList longTermWeatherList = new LongTermWeatherList();
-
-    public Integer recentCityId = null;
 
     private Formatting formatting;
     private SharedPreferences prefs;
@@ -341,37 +339,14 @@ public class MainActivity extends BaseActivity implements LocationListener {
         alert.show();
     }
 
-    private void saveLocation(int cityId) {
-        recentCityId = weatherStorage.getCityId();
-        weatherStorage.setCityId(cityId);
-
-//        if (!recentCityId.equals(result)) {
-//            // New location, update weather
-//            getTodayWeather();
-//            getLongTermWeather();
-//            getTodayUVIndex();
-//        }
-    }
-
     private void aboutDialog() {
         new AboutDialogFragment().show(getSupportFragmentManager(), null);
-    }
-
-    public static String getRainString(JSONObject rainObj) {
-        String rain = "0";
-        if (rainObj != null) {
-            rain = rainObj.optString("3h", "fail");
-            if ("fail".equals(rain)) {
-                rain = rainObj.optString("1h", "0");
-            }
-        }
-        return rain;
     }
 
     private ParseResult parseTodayJson(String result) {
         try {
             double weatherUvIndex = todayWeather.getUvIndex();
-            todayWeather = OpenWeatherMapJsonParser.convertJsonToWeather(result);
+            todayWeather = OpenMeteoJsonParser.convertJsonToWeather(result);
             todayWeather.setUvIndex(weatherUvIndex);
 
             weatherStorage.setLastToday(result);
@@ -388,7 +363,7 @@ public class MainActivity extends BaseActivity implements LocationListener {
 
     private ParseResult parseTodayUVIJson(String result) {
         try {
-            double uvi = OpenWeatherMapJsonParser.convertJsonToUVIndex(result);
+            double uvi = OpenMeteoJsonParser.convertJsonToUVIndex(result);
             todayWeather.setUvIndex(uvi);
             weatherStorage.setLastUviToday(result);
         } catch (JSONException e) {
@@ -462,7 +437,7 @@ public class MainActivity extends BaseActivity implements LocationListener {
 
     public ParseResult parseLongTermJson(String result) {
         try {
-            List<Weather> weatherList = OpenWeatherMapJsonParser.convertJsonToWeatherList(result);
+            List<Weather> weatherList = OpenMeteoJsonParser.convertJsonToWeatherList(result);
             weatherStorage.setLastLongTerm(result);
 
             longTermWeatherList.clear();
@@ -539,10 +514,6 @@ public class MainActivity extends BaseActivity implements LocationListener {
         if (id == R.id.action_refresh) {
             refreshWeather();
             return true;
-        }
-        if (id == R.id.action_map) {
-            Intent intent = new Intent(MainActivity.this, MapActivity.class);
-            startActivity(intent);
         }
         if (id == R.id.action_graphs) {
             Intent intent = new Intent(MainActivity.this, GraphActivity.class);
@@ -710,7 +681,24 @@ public class MainActivity extends BaseActivity implements LocationListener {
         Log.i("LOCATION (" + location.getProvider().toUpperCase() + ")", location.getLatitude() + ", " + location.getLongitude());
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        new ProvideCityNameTask(this, this, progressDialog).execute("coords", Double.toString(latitude), Double.toString(longitude));
+        weatherStorage.setLatitude(latitude);
+        weatherStorage.setLongitude(longitude);
+
+        // Try to get city name using Geocoder
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                String cityName = addresses.get(0).getLocality();
+                String countryName = addresses.get(0).getCountryName();
+                if (cityName != null) weatherStorage.setCity(cityName);
+                if (countryName != null) weatherStorage.setCountry(countryName);
+            }
+        } catch (IOException e) {
+            Log.e("Geocoder", "Error getting city name", e);
+        }
+
+        refreshWeather();
     }
 
     @Override
@@ -798,19 +786,27 @@ public class MainActivity extends BaseActivity implements LocationListener {
             try {
                 JSONObject reader = new JSONObject(response);
 
-                final int count = reader.optInt("count");
-                if (count == 0) {
+                if (!reader.has("results")) {
                     Log.e("Geolocation", "No city found");
                     return ParseResult.CITY_NOT_FOUND;
                 }
 
-//                saveLocation(reader.getString("id"));
-                final JSONArray cityList = reader.getJSONArray("list");
+                final JSONArray results = reader.getJSONArray("results");
+                if (results.length() == 0) {
+                    Log.e("Geolocation", "No city found");
+                    return ParseResult.CITY_NOT_FOUND;
+                }
 
-                if (cityList.length() > 1) {
-                    launchLocationPickerDialog(cityList);
+                if (results.length() > 1) {
+                    launchLocationPickerDialog(results);
                 } else {
-                    saveLocation(cityList.getJSONObject(0).getInt("id"));
+                    JSONObject city = results.getJSONObject(0);
+                    weatherStorage.setLatitude(city.getDouble("latitude"));
+                    weatherStorage.setLongitude(city.getDouble("longitude"));
+                    weatherStorage.setCity(city.getString("name"));
+                    if (city.has("country")) {
+                        weatherStorage.setCountry(city.getString("country"));
+                    }
                 }
 
             } catch (JSONException e) {
@@ -846,52 +842,6 @@ public class MainActivity extends BaseActivity implements LocationListener {
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.add(android.R.id.content, fragment)
                 .addToBackStack(null).commit();
-    }
-
-    class ProvideCityNameTask extends GenericRequestTask {
-
-        public ProvideCityNameTask(Context context, MainActivity activity, ProgressDialog progressDialog) {
-            super(context, activity, progressDialog);
-        }
-
-        @Override
-        protected void onPreExecute() { /*Nothing*/ }
-
-        @Override
-        protected String getAPIName() {
-            return "weather";
-        }
-
-        @Override
-        protected ParseResult parseResponse(String response) {
-            Log.i("RESULT", response.toString());
-            try {
-                JSONObject reader = new JSONObject(response);
-
-                final String code = reader.optString("cod");
-                if ("404".equals(code)) {
-                    Log.e("Geolocation", "No city found");
-                    return ParseResult.CITY_NOT_FOUND;
-                }
-
-                saveLocation(reader.getInt("id"));
-
-            } catch (JSONException e) {
-                Log.e("JSONException Data", response);
-                e.printStackTrace();
-                return ParseResult.JSON_EXCEPTION;
-            }
-
-            return ParseResult.OK;
-        }
-
-        @Override
-        protected void onPostExecute(TaskOutput output) {
-            /* Handle possible errors only */
-            handleTaskOutput(output);
-
-            refreshWeather();
-        }
     }
 
     class TodayUVITask extends GenericRequestTask {

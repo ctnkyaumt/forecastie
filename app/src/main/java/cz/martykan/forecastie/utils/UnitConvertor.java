@@ -17,10 +17,10 @@ public class UnitConvertor {
         float result;
         switch (unit) {
             case "°C":
-                result = UnitConvertor.kelvinToCelsius(temperature);
+                result = temperature;
                 break;
             case "°F":
-                result = UnitConvertor.kelvinToFahrenheit(temperature);
+                result = UnitConvertor.celsiusToFahrenheit(temperature);
                 break;
             default:
                 result = temperature;
@@ -29,12 +29,8 @@ public class UnitConvertor {
         return result;
     }
 
-    public static float kelvinToCelsius(float kelvinTemp) {
-        return kelvinTemp - 273.15f;
-    }
-
-    public static float kelvinToFahrenheit(float kelvinTemp) {
-        return ((kelvinTemp - 273.15f) * 1.8f) + 32;
+    public static float celsiusToFahrenheit(float celsiusTemp) {
+        return (celsiusTemp * 1.8f) + 32;
     }
 
     public static float convertRain(float rain, SharedPreferences sp) {

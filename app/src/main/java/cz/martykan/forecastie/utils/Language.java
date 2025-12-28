@@ -5,19 +5,19 @@ import java.util.Locale;
 public class Language {
 
     /**
-     * Returns the language code used by OpenWeatherMap corresponding to the system's default
+     * Returns the language code corresponding to the system's default
      * language.
      * @return language code
      */
-    public static String getOwmLanguage() {
+    public static String getLanguageCode() {
         String language = Locale.getDefault().getLanguage();
 
         if (language.equals(new Locale("cs").getLanguage())) { // Czech
-            return "cz";
+            return "cs";
         } else if (language.equals(new Locale("ko").getLanguage())) { // Korean
-            return "kr";
+            return "ko";
         } else if (language.equals(new Locale("lv").getLanguage())) { // Latvian
-            return "la";
+            return "lv";
         } else {
             return language;
         }

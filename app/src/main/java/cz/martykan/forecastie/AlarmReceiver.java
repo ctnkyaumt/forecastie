@@ -114,9 +114,17 @@ public class AlarmReceiver extends BroadcastReceiver {
         protected Void doInBackground(String... params) {
             try {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                String language = Language.getOwmLanguage();
-                String apiKey = sp.getString("apiKey", context.getResources().getString(R.string.apiKey));
-                URL url = new URL("https://api.openweathermap.org/data/2.5/weather?id=" + URLEncoder.encode(sp.getString("cityId", Constants.DEFAULT_CITY_ID), "UTF-8") + "&lang="+ language +"&appid=" + apiKey);
+                WeatherStorage weatherStorage = new WeatherStorage(context);
+                String lat, lon;
+                if (params.length == 2) {
+                    lat = params[0];
+                    lon = params[1];
+                } else {
+                    lat = Double.toString(weatherStorage.getLatitude(Constants.DEFAULT_LAT));
+                    lon = Double.toString(weatherStorage.getLongitude(Constants.DEFAULT_LON));
+                }
+
+                URL url = new URL("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current_weather=true&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,weathercode,pressure_msl,windspeed_10m,winddirection_10m,rain,snowfall,precipitation_probability&daily=sunrise,sunset,uv_index_max&timezone=auto&timeformat=unixtime");
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 BufferedReader connectionBufferedReader = null;
                 try {
@@ -159,9 +167,17 @@ public class AlarmReceiver extends BroadcastReceiver {
         protected Void doInBackground(String... params) {
             try {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                String language = Language.getOwmLanguage();
-                String apiKey = sp.getString("apiKey", context.getResources().getString(R.string.apiKey));
-                URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?id=" + URLEncoder.encode(sp.getString("cityId", Constants.DEFAULT_CITY_ID), "UTF-8") + "&lang="+ language +"&mode=json&appid=" + apiKey);
+                WeatherStorage weatherStorage = new WeatherStorage(context);
+                String lat, lon;
+                if (params.length == 2) {
+                    lat = params[0];
+                    lon = params[1];
+                } else {
+                    lat = Double.toString(weatherStorage.getLatitude(Constants.DEFAULT_LAT));
+                    lon = Double.toString(weatherStorage.getLongitude(Constants.DEFAULT_LON));
+                }
+
+                URL url = new URL("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current_weather=true&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,weathercode,pressure_msl,windspeed_10m,winddirection_10m,rain,snowfall,precipitation_probability&daily=sunrise,sunset,uv_index_max&timezone=auto&timeformat=unixtime");
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 BufferedReader connectionBufferedReader = null;
                 try {
@@ -241,7 +257,8 @@ public class AlarmReceiver extends BroadcastReceiver {
             Location location = locationListener.getLocation();
             if (location != null) {
                 Log.d(TAG, String.format("Determined location: latitude %f - longitude %f", location.getLatitude(), location.getLongitude()));
-                new GetCityNameTask().execute(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                new GetWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                new GetLongTermWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
             } else {
                 Log.e(TAG, "Couldn't determine location. Using last known location.");
                 new GetWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -284,71 +301,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    public class GetCityNameTask extends AsyncTask <String, String, Void> {
-        private static final String TAG = "GetCityNameTask";
 
-        @Override
-        protected Void doInBackground(String... params) {
-            String lat = params[0];
-            String lon = params[1];
-
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-            String language = Language.getOwmLanguage();
-            String apiKey = sp.getString("apiKey", context.getResources().getString(R.string.apiKey));
-
-            try {
-                URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=&lat=" + lat + "&lon=" + lon + "&lang="+ language +"&appid=" + apiKey);
-                Log.d(TAG, "Request: " + url.toString());
-
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-                if (urlConnection.getResponseCode() == 200) {
-                    BufferedReader connectionBufferedReader = null;
-                    try {
-                        connectionBufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                        StringBuilder result = new StringBuilder();
-                        String line;
-                        while ((line = connectionBufferedReader.readLine()) != null) {
-                            result.append(line).append("\n");
-                        }
-                        Log.d(TAG, "JSON Result: " + result);
-                        JSONObject reader = new JSONObject(result.toString());
-                        String cityId = reader.getString("id");
-                        String city = reader.getString("name");
-                        String country = "";
-                        JSONObject countryObj = reader.optJSONObject("sys");
-                        if (countryObj != null) {
-                            country = ", " + countryObj.getString("country");
-                        }
-                        Log.d(TAG, "City: " + city + country);
-                        String lastCity = PreferenceManager.getDefaultSharedPreferences(context).getString("city", "");
-                        String currentCity = city + country;
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("cityId", cityId);
-                        editor.putString("city", currentCity);
-                        editor.putBoolean("cityChanged", !currentCity.equals(lastCity));
-                        editor.commit();
-
-                    } catch (JSONException e){
-                        Log.e(TAG, "An error occurred while reading the JSON object", e);
-                    } finally {
-                        if (connectionBufferedReader != null) connectionBufferedReader.close();
-                    }
-                } else {
-                    Log.e(TAG, "Error: Response code " + urlConnection.getResponseCode());
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Connection error", e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            new GetWeatherTask().execute();
-            new GetLongTermWeatherTask().execute();
-        }
-    }
 
     private static long intervalMillisForRecurringAlarm(String intervalPref) {
         int interval = Integer.parseInt(intervalPref);

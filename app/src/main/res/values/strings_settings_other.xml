@@ -31,8 +31,6 @@
     <string name="settings_6hour">6 h</string>
     <string name="settings_12hour">12 h</string>
     <string name="settings_24hour">24 h</string>
-    <string name="setting_apiKey">API key</string>
-    <string name="setting_apiKey_summary">Custom API key for OpenWeatherMap queries</string>
 
     <!-- Settings/Date format -->
     <string name="error_dateFormat">DATE FORMAT ERROR</string>
