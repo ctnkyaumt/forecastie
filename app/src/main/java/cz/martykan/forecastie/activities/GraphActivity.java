@@ -184,6 +184,7 @@ public class GraphActivity extends BaseActivity {
 
         ArrayList<ChartSet> data = new ArrayList<>();
         data.add(dataset);
+        lineChartView.reset();
         lineChartView.addData(data);
         lineChartView.setGrid(ChartView.GridType.HORIZONTAL, 4, 1, gridPaint);
         lineChartView.setAxisBorderValues(min, max);
@@ -224,6 +225,7 @@ public class GraphActivity extends BaseActivity {
 
         ArrayList<ChartSet> data = new ArrayList<>();
         data.add(dataset);
+        barChartView.reset();
         barChartView.addData(data);
         barChartView.setGrid(ChartView.GridType.HORIZONTAL, max / stepSize, 1, gridPaint);
         barChartView.setAxisBorderValues(0, (int) Math.ceil(maxRain));
@@ -271,6 +273,7 @@ public class GraphActivity extends BaseActivity {
 
         ArrayList<ChartSet> data = new ArrayList<>();
         data.add(dataset);
+        lineChartView.reset();
         lineChartView.addData(data);
         lineChartView.setGrid(ChartView.GridType.HORIZONTAL, max / stepSize, 1, gridPaint);
         lineChartView.setAxisBorderValues(0, (int) maxWindSpeed);
@@ -317,6 +320,7 @@ public class GraphActivity extends BaseActivity {
 
         ArrayList<ChartSet> data = new ArrayList<>();
         data.add(dataset);
+        lineChartView.reset();
         lineChartView.addData(data);
         lineChartView.setGrid(ChartView.GridType.HORIZONTAL, rows, 1, gridPaint);
         lineChartView.setAxisBorderValues(min, max);
@@ -360,6 +364,7 @@ public class GraphActivity extends BaseActivity {
 
         ArrayList<ChartSet> data = new ArrayList<>();
         data.add(dataset);
+        lineChartView.reset();
         lineChartView.addData(data);
         lineChartView.setGrid(ChartView.GridType.HORIZONTAL, (max - min) / stepSize, 1, gridPaint);
         lineChartView.setAxisBorderValues(min, max);
@@ -377,6 +382,7 @@ public class GraphActivity extends BaseActivity {
     public ParseResult parseLongTermJson(String result) {
         try {
             List<Weather> parsedWeatherList = OpenMeteoJsonParser.convertJsonToWeatherList(result);
+            weatherList.clear();
             weatherList.addAll(parsedWeatherList);
         } catch (JSONException e) {
             Log.e("JSONException Data", result);
@@ -408,8 +414,8 @@ public class GraphActivity extends BaseActivity {
         else if (i == numWeatherData - 1 && weatherHour < 11) {
             return output;
         }
-        // label in the middle of the day at 11:00 / 12:00 / 13:00 for all other days
-        else if (weatherHour >= 11 && weatherHour <= 13) {
+        // label in the middle of the day at 12:00 for all other days
+        else if (weatherHour == 12) {
             return output;
         }
         // normal case: no date label
@@ -459,6 +465,7 @@ public class GraphActivity extends BaseActivity {
         ArrayList<ChartSet> data = new ArrayList<>();
         data.add(barDataset);
         BarChartView barChartView = findViewById(id);
+        barChartView.reset();
         barChartView.addData(data);
         barChartView.setBarSpacing(0); // visually join bars into one bar per day
         barChartView.setAxisBorderValues(Math.min(0, max), Math.max(0, max));
