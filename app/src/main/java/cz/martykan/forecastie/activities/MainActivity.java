@@ -350,6 +350,8 @@ public class MainActivity extends BaseActivity implements LocationListener {
             double weatherUvIndex = todayWeather.getUvIndex();
             todayWeather = OpenMeteoJsonParser.convertJsonToWeather(result);
             todayWeather.setUvIndex(weatherUvIndex);
+            todayWeather.setCity(weatherStorage.getCity());
+            todayWeather.setCountry(weatherStorage.getCountry());
 
             weatherStorage.setLastToday(result);
             weatherStorage.setLatitude(todayWeather.getLat());
@@ -386,7 +388,15 @@ public class MainActivity extends BaseActivity implements LocationListener {
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getApplicationContext());
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(city + (country.isEmpty() ? "" : ", " + country));
+            String title = "";
+            if (!city.isEmpty() && !country.isEmpty()) {
+                title = city + ", " + country;
+            } else if (!city.isEmpty()) {
+                title = city;
+            } else if (!country.isEmpty()) {
+                title = country;
+            }
+            actionBar.setTitle(title);
         }
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -458,6 +468,10 @@ public class MainActivity extends BaseActivity implements LocationListener {
     public ParseResult parseLongTermJson(String result) {
         try {
             List<Weather> weatherList = OpenMeteoJsonParser.convertJsonToWeatherList(result);
+            for (Weather w : weatherList) {
+                w.setCity(weatherStorage.getCity());
+                w.setCountry(weatherStorage.getCountry());
+            }
             weatherStorage.setLastLongTerm(result);
 
             longTermWeatherList.clear();
@@ -805,14 +819,9 @@ public class MainActivity extends BaseActivity implements LocationListener {
         protected ParseResult parseResponse(String response) {
             try {
                 JSONObject reader = new JSONObject(response);
+                final JSONArray results = reader.optJSONArray("results");
 
-                if (!reader.has("results")) {
-                    Log.e("Geolocation", "No city found");
-                    return ParseResult.CITY_NOT_FOUND;
-                }
-
-                final JSONArray results = reader.getJSONArray("results");
-                if (results.length() == 0) {
+                if (results == null || results.length() == 0) {
                     Log.e("Geolocation", "No city found");
                     return ParseResult.CITY_NOT_FOUND;
                 }

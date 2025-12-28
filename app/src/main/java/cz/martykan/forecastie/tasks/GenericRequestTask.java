@@ -188,9 +188,9 @@ public abstract class GenericRequestTask extends AsyncTask<String, String, TaskO
             uriBuilder.appendQueryParameter("longitude", lon);
             uriBuilder.appendQueryParameter("current_weather", "true");
             uriBuilder.appendQueryParameter("hourly", "temperature_2m,relativehumidity_2m,weathercode,pressure_msl,windspeed_10m,winddirection_10m,rain,precipitation_probability");
-            uriBuilder.appendQueryParameter("daily", "sunrise,sunset");
-                uriBuilder.appendQueryParameter("timezone", "auto");
-                uriBuilder.appendQueryParameter("timeformat", "unixtime");
+            uriBuilder.appendQueryParameter("daily", "sunrise,sunset,uv_index_max");
+            uriBuilder.appendQueryParameter("timezone", "auto");
+            uriBuilder.appendQueryParameter("timeformat", "unixtime");
         }
 
         return new URL(uriBuilder.build().toString());

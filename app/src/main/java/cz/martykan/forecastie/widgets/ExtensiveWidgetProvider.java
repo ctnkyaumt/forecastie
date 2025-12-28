@@ -43,7 +43,7 @@ public class ExtensiveWidgetProvider extends AbstractWidgetProvider {
             DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
             String lastUpdated = context.getString(R.string.last_update_widget, MainActivity.formatTimeWithDayIfNotToday(context, widgetWeather.getLastUpdated()));
 
-            remoteViews.setTextViewText(R.id.widgetCity, widgetWeather.getCity() + ", " + widgetWeather.getCountry());
+            remoteViews.setTextViewText(R.id.widgetCity, this.getFormattedLocation(widgetWeather));
             remoteViews.setTextViewText(R.id.widgetTemperature, this.getFormattedTemperature(widgetWeather, context, sp));
             remoteViews.setTextViewText(R.id.widgetDescription, widgetWeather.getDescription());
             remoteViews.setTextViewText(R.id.widgetWind, context.getString(R.string.wind) + ": " + this.getFormattedWind(widgetWeather, context, sp));

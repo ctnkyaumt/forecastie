@@ -21,19 +21,23 @@ public class OpenMeteoJsonParser {
     public static List<Weather> convertJsonToWeatherList(String jsonString) throws JSONException {
         List<Weather> weatherList = new ArrayList<>();
         JSONObject root = new JSONObject(jsonString);
-        JSONObject hourly = root.getJSONObject("hourly");
-        JSONArray times = hourly.getJSONArray("time");
-        JSONArray temperatures = hourly.getJSONArray("temperature_2m");
-        JSONArray humidities = hourly.getJSONArray("relativehumidity_2m");
-        JSONArray weatherCodes = hourly.getJSONArray("weathercode");
-        JSONArray pressures = hourly.getJSONArray("pressure_msl");
-        JSONArray windSpeeds = hourly.getJSONArray("windspeed_10m");
-        JSONArray windDirections = hourly.getJSONArray("winddirection_10m");
+        JSONObject hourly = root.optJSONObject("hourly");
+        if (hourly == null) return weatherList;
+
+        JSONArray times = hourly.optJSONArray("time");
+        JSONArray temperatures = hourly.optJSONArray("temperature_2m");
+        JSONArray humidities = hourly.optJSONArray("relativehumidity_2m");
+        JSONArray weatherCodes = hourly.optJSONArray("weathercode");
+        JSONArray pressures = hourly.optJSONArray("pressure_msl");
+        JSONArray windSpeeds = hourly.optJSONArray("windspeed_10m");
+        JSONArray windDirections = hourly.optJSONArray("winddirection_10m");
         JSONArray rains = hourly.optJSONArray("rain");
         JSONArray precipProbs = hourly.optJSONArray("precipitation_probability");
 
-        double lat = root.getDouble("latitude");
-        double lon = root.getDouble("longitude");
+        if (times == null) return weatherList;
+
+        double lat = root.optDouble("latitude", 0);
+        double lon = root.optDouble("longitude", 0);
 
         // Daily data for sunrise/sunset
         JSONObject daily = root.optJSONObject("daily");
@@ -46,24 +50,27 @@ public class OpenMeteoJsonParser {
 
         for (int i = 0; i < times.length(); i++) {
             Weather weather = new Weather();
-            weather.setDate(new Date(times.getLong(i) * 1000));
-            weather.setTemperature(temperatures.getDouble(i));
-            weather.setHumidity(humidities.getInt(i));
-            weather.setWeatherId(mapWmoToOwm(weatherCodes.getInt(i)));
-            weather.setDescription(mapWmoToDescription(weatherCodes.getInt(i)));
-            weather.setPressure(pressures.getInt(i));
-            weather.setWind(windSpeeds.getDouble(i));
-            weather.setWindDirectionDegree(windDirections.getDouble(i));
+            weather.setDate(new Date(times.optLong(i, 0) * 1000));
+            if (temperatures != null && i < temperatures.length()) weather.setTemperature(temperatures.optDouble(i, 0));
+            if (humidities != null && i < humidities.length()) weather.setHumidity(humidities.optInt(i, 0));
+            if (weatherCodes != null && i < weatherCodes.length()) {
+                int code = weatherCodes.optInt(i, 0);
+                weather.setWeatherId(mapWmoToOwm(code));
+                weather.setDescription(mapWmoToDescription(code));
+            }
+            if (pressures != null && i < pressures.length()) weather.setPressure(pressures.optInt(i, 0));
+            if (windSpeeds != null && i < windSpeeds.length()) weather.setWind(windSpeeds.optDouble(i, 0));
+            if (windDirections != null && i < windDirections.length()) weather.setWindDirectionDegree(windDirections.optDouble(i, 0));
             weather.setLat(lat);
             weather.setLon(lon);
-            if (rains != null) weather.setRain(rains.getDouble(i));
-            if (precipProbs != null) weather.setChanceOfPrecipitation(precipProbs.getDouble(i) / 100.0);
+            if (rains != null && i < rains.length()) weather.setRain(rains.optDouble(i, 0));
+            if (precipProbs != null && i < precipProbs.length()) weather.setChanceOfPrecipitation(precipProbs.optDouble(i, 0) / 100.0);
             
             if (sunriseArray != null && sunriseArray.length() > 0) {
-                weather.setSunrise(new Date(sunriseArray.getLong(0) * 1000));
+                weather.setSunrise(new Date(sunriseArray.optLong(0, 0) * 1000));
             }
             if (sunsetArray != null && sunsetArray.length() > 0) {
-                weather.setSunset(new Date(sunsetArray.getLong(0) * 1000));
+                weather.setSunset(new Date(sunsetArray.optLong(0, 0) * 1000));
             }
 
             weather.setLastUpdated(Calendar.getInstance().getTimeInMillis());
@@ -76,22 +83,35 @@ public class OpenMeteoJsonParser {
     @NonNull
     public static Weather convertJsonToWeather(String jsonString) throws JSONException {
         JSONObject root = new JSONObject(jsonString);
-        JSONObject current = root.getJSONObject("current_weather");
+        JSONObject current = root.optJSONObject("current_weather");
         
         Weather weather = new Weather();
-        weather.setDate(new Date(current.getLong("time") * 1000));
-        weather.setTemperature(current.getDouble("temperature"));
-        weather.setWeatherId(mapWmoToOwm(current.getInt("weathercode")));
-        weather.setWind(current.getDouble("windspeed"));
-        weather.setWindDirectionDegree(current.getDouble("winddirection"));
-        weather.setLat(root.getDouble("latitude"));
-        weather.setLon(root.getDouble("longitude"));
+        if (current != null) {
+            weather.setDate(new Date(current.optLong("time", 0) * 1000));
+            weather.setTemperature(current.optDouble("temperature", 0));
+            int code = current.optInt("weathercode", 0);
+            weather.setWeatherId(mapWmoToOwm(code));
+            weather.setDescription(mapWmoToDescription(code));
+            weather.setWind(current.optDouble("windspeed", 0));
+            weather.setWindDirectionDegree(current.optDouble("winddirection", 0));
+        } else {
+            weather.setDate(new Date());
+        }
+
+        weather.setLat(root.optDouble("latitude", 0));
+        weather.setLon(root.optDouble("longitude", 0));
         
         // Open-Meteo current_weather doesn't have humidity/pressure, get from hourly if available
         JSONObject hourly = root.optJSONObject("hourly");
         if (hourly != null) {
-            weather.setHumidity(hourly.getJSONArray("relativehumidity_2m").getInt(0));
-            weather.setPressure(hourly.getJSONArray("pressure_msl").getInt(0));
+            JSONArray humArray = hourly.optJSONArray("relativehumidity_2m");
+            if (humArray != null && humArray.length() > 0) {
+                weather.setHumidity(humArray.optInt(0, 0));
+            }
+            JSONArray pressArray = hourly.optJSONArray("pressure_msl");
+            if (pressArray != null && pressArray.length() > 0) {
+                weather.setPressure(pressArray.optInt(0, 0));
+            }
         }
 
         JSONObject daily = root.optJSONObject("daily");
@@ -99,15 +119,14 @@ public class OpenMeteoJsonParser {
             JSONArray sunriseArray = daily.optJSONArray("sunrise");
             JSONArray sunsetArray = daily.optJSONArray("sunset");
             if (sunriseArray != null && sunriseArray.length() > 0) {
-                weather.setSunrise(new Date(sunriseArray.getLong(0) * 1000));
+                weather.setSunrise(new Date(sunriseArray.optLong(0, 0) * 1000));
             }
             if (sunsetArray != null && sunsetArray.length() > 0) {
-                weather.setSunset(new Date(sunsetArray.getLong(0) * 1000));
+                weather.setSunset(new Date(sunsetArray.optLong(0, 0) * 1000));
             }
         }
 
         weather.setLastUpdated(Calendar.getInstance().getTimeInMillis());
-        weather.setDescription(mapWmoToDescription(current.getInt("weathercode")));
         return weather;
     }
 
@@ -115,7 +134,10 @@ public class OpenMeteoJsonParser {
         JSONObject root = new JSONObject(jsonString);
         JSONObject daily = root.optJSONObject("daily");
         if (daily != null) {
-            return daily.getJSONArray("uv_index_max").getDouble(0);
+            JSONArray uviArray = daily.optJSONArray("uv_index_max");
+            if (uviArray != null && uviArray.length() > 0) {
+                return uviArray.getDouble(0);
+            }
         }
         return 0;
     }

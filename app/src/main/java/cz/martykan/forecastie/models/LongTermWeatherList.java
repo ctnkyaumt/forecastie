@@ -10,10 +10,14 @@ public class LongTermWeatherList {
     public List<Weather> getToday() {
         List<Weather> todayList = new ArrayList<>();
         Calendar tomorrowCalendar = getTomorrowCalendar();
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.MINUTE, 0);
+        now.set(Calendar.SECOND, 0);
+        now.set(Calendar.MILLISECOND, 0);
 
         for (Weather weather : this.longTermWeatherList) {
             Calendar weatherCalendar = getWeatherCalendar(weather);
-            if (weatherCalendar.compareTo(tomorrowCalendar) < 0) {
+            if (weatherCalendar.compareTo(now) >= 0 && weatherCalendar.compareTo(tomorrowCalendar) < 0) {
                 todayList.add(weather);
             }
         }

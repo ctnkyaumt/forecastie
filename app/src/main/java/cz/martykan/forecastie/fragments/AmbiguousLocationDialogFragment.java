@@ -142,6 +142,8 @@ public class AmbiguousLocationDialogFragment extends DialogFragment implements L
         weatherStorage.setCityId(weather.getCityId());
         weatherStorage.setLatitude(weather.getLat());
         weatherStorage.setLongitude(weather.getLon());
+        weatherStorage.setCity(weather.getCity());
+        weatherStorage.setCountry(weather.getCountry());
 
         bundle.putBoolean(MainActivity.SHOULD_REFRESH_FLAG, true);
         intent.putExtras(bundle);

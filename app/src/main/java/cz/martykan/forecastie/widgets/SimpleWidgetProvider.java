@@ -36,7 +36,7 @@ public class SimpleWidgetProvider extends AbstractWidgetProvider {
                 continue;
             }
 
-            remoteViews.setTextViewText(R.id.widgetCity, widgetWeather.getCity() + ", " + widgetWeather.getCountry());
+            remoteViews.setTextViewText(R.id.widgetCity, this.getFormattedLocation(widgetWeather));
             remoteViews.setTextViewText(R.id.widgetTemperature, this.getFormattedTemperature(widgetWeather, context, sp));
             remoteViews.setTextViewText(R.id.widgetDescription, widgetWeather.getDescription());
             remoteViews.setImageViewBitmap(R.id.widgetIcon, getWeatherIcon(widgetWeather, context));

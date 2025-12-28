@@ -40,7 +40,10 @@ public class WeatherStorage {
         }
 
         try {
-            return OpenMeteoJsonParser.convertJsonToWeather(lastToday);
+            Weather weather = OpenMeteoJsonParser.convertJsonToWeather(lastToday);
+            weather.setCity(getCity());
+            weather.setCountry(getCountry());
+            return weather;
         } catch (JSONException e) {
             Log.e("WeatherStorage", "Could not parse today JSON", e);
             e.printStackTrace();
@@ -60,7 +63,14 @@ public class WeatherStorage {
         }
 
         try {
-            return OpenMeteoJsonParser.convertJsonToWeatherList(lastLongTerm);
+            List<Weather> weatherList = OpenMeteoJsonParser.convertJsonToWeatherList(lastLongTerm);
+            String city = getCity();
+            String country = getCountry();
+            for (Weather weather : weatherList) {
+                weather.setCity(city);
+                weather.setCountry(country);
+            }
+            return weatherList;
         } catch (JSONException e) {
             Log.e("WeatherStorage", "Could not parse long term JSON", e);
             e.printStackTrace();
@@ -108,7 +118,7 @@ public class WeatherStorage {
     }
 
     public void setLatitude(double latitude) {
-        this.sharedPreferences.edit().putFloat("latitude", (float) latitude).apply();
+        this.sharedPreferences.edit().putFloat("latitude", (float) latitude).commit();
     }
 
     @Nullable
@@ -126,14 +136,22 @@ public class WeatherStorage {
     }
 
     public void setLongitude(double longitude) {
-        this.sharedPreferences.edit().putFloat("longitude", (float) longitude).apply();
+        this.sharedPreferences.edit().putFloat("longitude", (float) longitude).commit();
     }
 
     public void setCity(String city) {
-        this.sharedPreferences.edit().putString("city", city).apply();
+        this.sharedPreferences.edit().putString("city", city).commit();
     }
 
     public void setCountry(String country) {
-        this.sharedPreferences.edit().putString("country", country).apply();
+        this.sharedPreferences.edit().putString("country", country).commit();
+    }
+
+    public String getCity() {
+        return this.sharedPreferences.getString("city", "");
+    }
+
+    public String getCountry() {
+        return this.sharedPreferences.getString("country", "");
     }
 }

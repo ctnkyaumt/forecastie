@@ -73,6 +73,23 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.widgetRoot, pendingIntent);
     }
 
+    protected String getFormattedLocation(Weather weather) {
+        String city = weather.getCity();
+        String country = weather.getCountry();
+        if (city == null) city = "";
+        if (country == null) country = "";
+
+        if (!city.isEmpty() && !country.isEmpty()) {
+            return city + ", " + country;
+        } else if (!city.isEmpty()) {
+            return city;
+        } else if (!country.isEmpty()) {
+            return country;
+        } else {
+            return "";
+        }
+    }
+
     protected String localize(SharedPreferences sp, Context context, String preferenceKey,
                               String defaultValueKey) {
         MainActivity.initMappings();
