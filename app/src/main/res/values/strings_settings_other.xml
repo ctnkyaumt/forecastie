@@ -39,4 +39,7 @@
     <string name="setting_dateFormatCustom_summary">Provide the custom SimpleDateFormat string to be used</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
+
+    <string name="setting_apiKey">OpenWeatherMap API Key (deprecated)</string>
+    <string name="setting_apiKey_summary">No longer required as the app uses Open-Meteo.</string>
 </resources>
