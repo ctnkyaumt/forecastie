@@ -25,6 +25,7 @@ public class TimeWidgetProvider extends AbstractWidgetProvider {
                     R.layout.time_widget);
 
             setTheme(context, remoteViews);
+            openMainActivity(context, remoteViews);
 
             Intent intent = new Intent(context, AlarmReceiver.class);
             PendingIntent pendingIntent = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
@@ -36,8 +37,8 @@ public class TimeWidgetProvider extends AbstractWidgetProvider {
             Weather widgetWeather = this.getTodayWeather(context);
 
             if (widgetWeather == null) {
-                this.openMainActivity(context, remoteViews);
-                return;
+                appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                continue;
             }
 
             DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);

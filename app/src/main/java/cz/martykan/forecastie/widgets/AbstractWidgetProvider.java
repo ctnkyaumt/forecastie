@@ -68,14 +68,9 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
     }
 
     protected void openMainActivity(Context context, RemoteViews remoteViews) {
-        try {
-            Intent intent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-            remoteViews.setOnClickPendingIntent(R.id.widgetRoot, pendingIntent);
-            pendingIntent.send();
-        } catch (PendingIntent.CanceledException e) {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        remoteViews.setOnClickPendingIntent(R.id.widgetRoot, pendingIntent);
     }
 
     protected String localize(SharedPreferences sp, Context context, String preferenceKey,
