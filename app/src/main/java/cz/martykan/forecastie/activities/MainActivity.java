@@ -139,8 +139,6 @@ public class MainActivity extends BaseActivity implements LocationListener {
 
         // Initiate activity
         super.onCreate(savedInstanceState);
-        boolean darkTheme = this.darkTheme;
-        boolean blackTheme = this.blackTheme;
         setContentView(R.layout.activity_scrolling);
         appView = findViewById(R.id.viewApp);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -151,9 +149,9 @@ public class MainActivity extends BaseActivity implements LocationListener {
         // Load toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (darkTheme) {
+        if (this.darkTheme) {
             toolbar.setPopupTheme(R.style.AppTheme_PopupOverlay_Dark);
-        } else if (blackTheme) {
+        } else if (this.blackTheme) {
             toolbar.setPopupTheme(R.style.AppTheme_PopupOverlay_Black);
         }
 
@@ -382,6 +380,9 @@ public class MainActivity extends BaseActivity implements LocationListener {
     private void updateTodayWeatherUI() {
         String city = todayWeather.getCity();
         String country = todayWeather.getCountry();
+        if (city == null) city = "";
+        if (country == null) country = "";
+
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getApplicationContext());
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -406,8 +407,12 @@ public class MainActivity extends BaseActivity implements LocationListener {
         double pressure = UnitConvertor.convertPressure(todayWeather.getPressure(), sp);
 
         todayTemperature.setText(new DecimalFormat("0.#").format(temperature) + " " + sp.getString("unit", "°C"));
-        todayDescription.setText(todayWeather.getDescription().substring(0, 1).toUpperCase() +
-                todayWeather.getDescription().substring(1) + rainString);
+
+        String description = todayWeather.getDescription();
+        if (description == null || description.isEmpty()) description = "Unknown";
+        todayDescription.setText(description.substring(0, 1).toUpperCase() +
+                description.substring(1) + rainString);
+
         if (sp.getString("speedUnit", "m/s").equals("bft")) {
             todayWind.setText(getString(R.string.wind) + ": " +
                     UnitConvertor.getBeaufortName((int) wind, this) +
@@ -420,8 +425,19 @@ public class MainActivity extends BaseActivity implements LocationListener {
         todayPressure.setText(getString(R.string.pressure) + ": " + new DecimalFormat("0.0").format(pressure) + " " +
                 localize(sp, "pressureUnit", "hPa"));
         todayHumidity.setText(getString(R.string.humidity) + ": " + todayWeather.getHumidity() + " %");
-        todaySunrise.setText(getString(R.string.sunrise) + ": " + timeFormat.format(todayWeather.getSunrise()));
-        todaySunset.setText(getString(R.string.sunset) + ": " + timeFormat.format(todayWeather.getSunset()));
+
+        if (todayWeather.getSunrise() != null) {
+            todaySunrise.setText(getString(R.string.sunrise) + ": " + timeFormat.format(todayWeather.getSunrise()));
+        } else {
+            todaySunrise.setText(getString(R.string.sunrise) + ": -");
+        }
+
+        if (todayWeather.getSunset() != null) {
+            todaySunset.setText(getString(R.string.sunset) + ": " + timeFormat.format(todayWeather.getSunset()));
+        } else {
+            todaySunset.setText(getString(R.string.sunset) + ": -");
+        }
+
         todayIcon.setText(this.formatting.getWeatherIcon(todayWeather.getWeatherId(), TimeUtils.isDayTime(todayWeather, Calendar.getInstance())));
 
         linearLayoutTapForGraphs.setOnClickListener(new View.OnClickListener() {

@@ -35,13 +35,13 @@ public class OpenMeteoJsonParser {
         double lat = root.getDouble("latitude");
         double lon = root.getDouble("longitude");
 
-        // Daily data for sunrise/sunset (only first day used for all hourly entries in OWM logic usually, but we can be more precise)
+        // Daily data for sunrise/sunset
         JSONObject daily = root.optJSONObject("daily");
-        long sunrise = 0;
-        long sunset = 0;
+        JSONArray sunriseArray = null;
+        JSONArray sunsetArray = null;
         if (daily != null) {
-            sunrise = daily.getJSONArray("sunrise").getLong(0);
-            sunset = daily.getJSONArray("sunset").getLong(0);
+            sunriseArray = daily.optJSONArray("sunrise");
+            sunsetArray = daily.optJSONArray("sunset");
         }
 
         for (int i = 0; i < times.length(); i++) {
@@ -50,6 +50,7 @@ public class OpenMeteoJsonParser {
             weather.setTemperature(temperatures.getDouble(i));
             weather.setHumidity(humidities.getInt(i));
             weather.setWeatherId(mapWmoToOwm(weatherCodes.getInt(i)));
+            weather.setDescription(mapWmoToDescription(weatherCodes.getInt(i)));
             weather.setPressure(pressures.getInt(i));
             weather.setWind(windSpeeds.getDouble(i));
             weather.setWindDirectionDegree(windDirections.getDouble(i));
@@ -58,9 +59,11 @@ public class OpenMeteoJsonParser {
             if (rains != null) weather.setRain(rains.getDouble(i));
             if (precipProbs != null) weather.setChanceOfPrecipitation(precipProbs.getDouble(i) / 100.0);
             
-            if (sunrise != 0) {
-                weather.setSunrise(new Date(sunrise * 1000));
-                weather.setSunset(new Date(sunset * 1000));
+            if (sunriseArray != null && sunriseArray.length() > 0) {
+                weather.setSunrise(new Date(sunriseArray.getLong(0) * 1000));
+            }
+            if (sunsetArray != null && sunsetArray.length() > 0) {
+                weather.setSunset(new Date(sunsetArray.getLong(0) * 1000));
             }
 
             weather.setLastUpdated(Calendar.getInstance().getTimeInMillis());
@@ -93,11 +96,18 @@ public class OpenMeteoJsonParser {
 
         JSONObject daily = root.optJSONObject("daily");
         if (daily != null) {
-            weather.setSunrise(new Date(daily.getJSONArray("sunrise").getLong(0) * 1000));
-            weather.setSunset(new Date(daily.getJSONArray("sunset").getLong(0) * 1000));
+            JSONArray sunriseArray = daily.optJSONArray("sunrise");
+            JSONArray sunsetArray = daily.optJSONArray("sunset");
+            if (sunriseArray != null && sunriseArray.length() > 0) {
+                weather.setSunrise(new Date(sunriseArray.getLong(0) * 1000));
+            }
+            if (sunsetArray != null && sunsetArray.length() > 0) {
+                weather.setSunset(new Date(sunsetArray.getLong(0) * 1000));
+            }
         }
 
         weather.setLastUpdated(Calendar.getInstance().getTimeInMillis());
+        weather.setDescription(mapWmoToDescription(current.getInt("weathercode")));
         return weather;
     }
 
@@ -108,6 +118,40 @@ public class OpenMeteoJsonParser {
             return daily.getJSONArray("uv_index_max").getDouble(0);
         }
         return 0;
+    }
+
+    public static String mapWmoToDescription(int wmoCode) {
+        switch (wmoCode) {
+            case 0: return "Clear sky";
+            case 1: return "Mainly clear";
+            case 2: return "Partly cloudy";
+            case 3: return "Overcast";
+            case 45:
+            case 48: return "Fog";
+            case 51:
+            case 53:
+            case 55: return "Drizzle";
+            case 56:
+            case 57: return "Freezing Drizzle";
+            case 61:
+            case 63:
+            case 65: return "Rain";
+            case 66:
+            case 67: return "Freezing Rain";
+            case 71:
+            case 73:
+            case 75: return "Snow fall";
+            case 77: return "Snow grains";
+            case 80:
+            case 81:
+            case 82: return "Rain showers";
+            case 85:
+            case 86: return "Snow showers";
+            case 95:
+            case 96:
+            case 99: return "Thunderstorm";
+            default: return "Unknown";
+        }
     }
 
     public static int mapWmoToOwm(int wmoCode) {

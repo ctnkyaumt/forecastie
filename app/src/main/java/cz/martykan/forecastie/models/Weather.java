@@ -78,7 +78,7 @@ public class Weather {
     }
 
     public String getCity() {
-        return city;
+        return city != null ? city : "";
     }
 
     public void setCity(String city) {
@@ -94,7 +94,7 @@ public class Weather {
     }
 
     public String getCountry() {
-        return country;
+        return country != null ? country : "";
     }
 
     public void setCountry(String country) {
@@ -111,7 +111,7 @@ public class Weather {
 
 
     public String getDescription() {
-        return description;
+        return description != null ? description : "Unknown";
     }
 
     public void setDescription(String description) {
@@ -198,7 +198,7 @@ public class Weather {
         catch (Exception e) {
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
             try {
-                setSunrise(inputFormat.parse(dateString));
+                setSunset(inputFormat.parse(dateString));
             }
             catch (ParseException e2) {
                 setSunset(new Date()); // make the error somewhat obvious
