@@ -9,6 +9,7 @@ import cz.martykan.forecastie.R;
 public class WeatherViewHolder extends RecyclerView.ViewHolder {
     public TextView itemDate;
     public TextView itemTemperature;
+    public TextView itemFeelsLike;
     public TextView itemDescription;
     public TextView itemyWind;
     public TextView itemPressure;
@@ -20,6 +21,7 @@ public class WeatherViewHolder extends RecyclerView.ViewHolder {
         super(view);
         this.itemDate = (TextView) view.findViewById(R.id.itemDate);
         this.itemTemperature = (TextView) view.findViewById(R.id.itemTemperature);
+        this.itemFeelsLike = (TextView) view.findViewById(R.id.itemFeelsLike);
         this.itemDescription = (TextView) view.findViewById(R.id.itemDescription);
         this.itemyWind = (TextView) view.findViewById(R.id.itemWind);
         this.itemPressure = (TextView) view.findViewById(R.id.itemPressure);

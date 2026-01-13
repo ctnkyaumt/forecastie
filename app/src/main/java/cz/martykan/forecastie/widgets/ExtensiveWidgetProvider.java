@@ -65,5 +65,8 @@ public class ExtensiveWidgetProvider extends AbstractWidgetProvider {
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
+        if (appWidgetIds.length > 0) {
+            scheduleNextUpdate(context);
+        }
     }
 }

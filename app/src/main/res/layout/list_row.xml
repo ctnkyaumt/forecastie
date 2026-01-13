@@ -76,14 +76,24 @@
             android:textSize="48sp" />
 
         <TextView
-            android:id="@+id/itemTemperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="0 °C"
-            android:textSize="22sp"
-            android:layout_marginTop="8dp"
-            android:layout_below="@+id/itemIcon"
-            android:layout_alignRight="@+id/itemIcon"
-            android:layout_alignEnd="@+id/itemIcon" />
+                android:id="@+id/itemTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="0 °C"
+                android:textSize="22sp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/itemIcon"
+                android:layout_alignRight="@+id/itemIcon"
+                android:layout_alignEnd="@+id/itemIcon" />
+
+            <TextView
+                android:id="@+id/itemFeelsLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/itemTemperature"
+                android:layout_alignRight="@+id/itemTemperature"
+                android:layout_alignEnd="@+id/itemTemperature"
+                tools:text="Feels like: 0 °C"
+                android:textSize="14sp" />
     </RelativeLayout>
 </LinearLayout>

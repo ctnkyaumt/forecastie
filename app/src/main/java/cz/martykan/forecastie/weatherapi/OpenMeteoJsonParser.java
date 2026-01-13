@@ -120,6 +120,14 @@ public class OpenMeteoJsonParser {
             if (pressArray != null && pressArray.length() > 0) {
                 weather.setPressure(pressArray.optInt(0, 0));
             }
+            JSONArray rainArray = hourly.optJSONArray("rain");
+            if (rainArray != null && rainArray.length() > 0) {
+                weather.setRain(rainArray.optDouble(0, 0));
+            }
+            JSONArray precipProbArray = hourly.optJSONArray("precipitation_probability");
+            if (precipProbArray != null && precipProbArray.length() > 0) {
+                weather.setChanceOfPrecipitation(precipProbArray.optDouble(0, 0) / 100.0);
+            }
         }
 
         JSONObject daily = root.optJSONObject("daily");

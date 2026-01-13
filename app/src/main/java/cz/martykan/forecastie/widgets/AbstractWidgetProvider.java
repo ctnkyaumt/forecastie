@@ -144,6 +144,10 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
     }
 
     protected void scheduleNextUpdate(Context context) {
+        if (!shouldUpdate(context)) {
+            cancelUpdate(context);
+            return;
+        }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long now = new Date().getTime();
         long nextUpdate = now + DURATION_MINUTE - now % DURATION_MINUTE;
@@ -167,6 +171,11 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
     protected void cancelUpdate(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(getTimeIntent(context));
+    }
+
+    private boolean shouldUpdate(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return !sp.getString("refreshInterval", "1").equals("0");
     }
 
     protected PendingIntent getTimeIntent(Context context) {

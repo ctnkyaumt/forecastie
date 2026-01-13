@@ -54,8 +54,10 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherViewHold
 
         // Temperature
         float temperature = UnitConvertor.convertTemperature((float) weatherItem.getTemperature(), sp);
+        float feelsLikeTemperature = UnitConvertor.convertTemperature((float) weatherItem.getFeelsLikeTemperature(), sp);
         if (sp.getBoolean("temperatureInteger", false)) {
             temperature = Math.round(temperature);
+            feelsLikeTemperature = Math.round(feelsLikeTemperature);
         }
 
         // Rain
@@ -105,8 +107,15 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherViewHold
         customViewHolder.itemDate.setText(dateString);
         if (sp.getBoolean("displayDecimalZeroes", false)) {
             customViewHolder.itemTemperature.setText(new DecimalFormat("0.0").format(temperature) + " " + sp.getString("unit", "°C"));
+            customViewHolder.itemFeelsLike.setText(context.getString(R.string.feels_like) + ": " + new DecimalFormat("0.0").format(feelsLikeTemperature) + " " + sp.getString("unit", "°C"));
         } else {
             customViewHolder.itemTemperature.setText(new DecimalFormat("#.#").format(temperature) + " " + sp.getString("unit", "°C"));
+            customViewHolder.itemFeelsLike.setText(context.getString(R.string.feels_like) + ": " + new DecimalFormat("#.#").format(feelsLikeTemperature) + " " + sp.getString("unit", "°C"));
+        }
+        if (weatherItem.getFeelsLikeTemperature() == Float.MIN_VALUE) {
+            customViewHolder.itemFeelsLike.setVisibility(View.GONE);
+        } else {
+            customViewHolder.itemFeelsLike.setVisibility(View.VISIBLE);
         }
         customViewHolder.itemDescription.setText(weatherItem.getDescription().substring(0, 1).toUpperCase() +
                 weatherItem.getDescription().substring(1) + rainString);

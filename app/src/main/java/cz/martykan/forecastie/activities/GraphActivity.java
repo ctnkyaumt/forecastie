@@ -165,17 +165,31 @@ public class GraphActivity extends BaseActivity {
         float maxTemp = -1000;
 
         LineSet dataset = new LineSet();
+        LineSet feelsLikeDataset = new LineSet();
         for (int i = 0; i < numWeatherData; i++) {
             float temperature = UnitConvertor.convertTemperature((float) weatherList.get(i).getTemperature(), sp);
+            float feelsLike = UnitConvertor.convertTemperature((float) weatherList.get(i).getFeelsLikeTemperature(), sp);
 
             minTemp = (float) Math.min(Math.floor(temperature), minTemp);
             maxTemp = (float) Math.max(Math.ceil(temperature), maxTemp);
+            if (feelsLike != Float.MIN_VALUE) {
+                minTemp = (float) Math.min(Math.floor(feelsLike), minTemp);
+                maxTemp = (float) Math.max(Math.ceil(feelsLike), maxTemp);
+            }
 
             dataset.addPoint(getDateLabel(weatherList.get(i), i), temperature);
+            if (feelsLike != Float.MIN_VALUE) {
+                feelsLikeDataset.addPoint(getDateLabel(weatherList.get(i), i), feelsLike);
+            }
         }
         dataset.setSmooth(false);
         dataset.setColor(Color.parseColor("#FF5722"));
         dataset.setThickness(4);
+
+        feelsLikeDataset.setSmooth(false);
+        feelsLikeDataset.setColor(Color.parseColor("#FFAB91")); // Lighter orange
+        feelsLikeDataset.setThickness(2);
+        feelsLikeDataset.setDashed(new float[]{10, 10});
 
         int middle = Math.round(minTemp + (maxTemp - minTemp) / 2);
         int stepSize = Math.max(1, (int) Math.ceil(Math.abs(maxTemp - minTemp) / 4));
@@ -184,6 +198,9 @@ public class GraphActivity extends BaseActivity {
 
         ArrayList<ChartSet> data = new ArrayList<>();
         data.add(dataset);
+        if (feelsLikeDataset.size() > 0) {
+            data.add(feelsLikeDataset);
+        }
         lineChartView.reset();
         lineChartView.addData(data);
         lineChartView.setGrid(ChartView.GridType.HORIZONTAL, 4, 1, gridPaint);

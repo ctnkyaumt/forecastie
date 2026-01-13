@@ -52,5 +52,8 @@ public class SimpleWidgetProvider extends AbstractWidgetProvider {
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
+        if (appWidgetIds.length > 0) {
+            scheduleNextUpdate(context);
+        }
     }
 }
