@@ -93,6 +93,7 @@ public class MainActivity extends BaseActivity implements LocationListener {
     private Weather todayWeather = new Weather();
 
     private TextView todayTemperature;
+    private TextView todayFeelsLike;
     private TextView todayDescription;
     private TextView todayWind;
     private TextView todayPressure;
@@ -157,6 +158,7 @@ public class MainActivity extends BaseActivity implements LocationListener {
 
         // Initialize textboxes
         todayTemperature = findViewById(R.id.todayTemperature);
+        todayFeelsLike = findViewById(R.id.todayFeelsLike);
         todayDescription = findViewById(R.id.todayDescription);
         todayWind = findViewById(R.id.todayWind);
         todayPressure = findViewById(R.id.todayPressure);
@@ -407,6 +409,14 @@ public class MainActivity extends BaseActivity implements LocationListener {
             temperature = Math.round(temperature);
         }
 
+        Float feelsLikeTemperature = null;
+        if (todayWeather.isFeelsLikeTemperatureAvailable()) {
+            feelsLikeTemperature = UnitConvertor.convertTemperature(todayWeather.getFeelsLikeTemperature().floatValue(), sp);
+            if (sp.getBoolean("temperatureInteger", false)) {
+                feelsLikeTemperature = (float) Math.round(feelsLikeTemperature);
+            }
+        }
+
         // Rain
         String rainString = UnitConvertor.getRainString(todayWeather.getRain(), todayWeather.getChanceOfPrecipitation(), sp);
 
@@ -417,6 +427,15 @@ public class MainActivity extends BaseActivity implements LocationListener {
         double pressure = UnitConvertor.convertPressure(todayWeather.getPressure(), sp);
 
         todayTemperature.setText(new DecimalFormat("0.#").format(temperature) + " " + sp.getString("unit", "°C"));
+
+        if (feelsLikeTemperature != null) {
+            todayFeelsLike.setText(getString(R.string.feels_like) + ": "
+                    + new DecimalFormat("0.#").format(feelsLikeTemperature)
+                    + " " + sp.getString("unit", "°C"));
+            todayFeelsLike.setVisibility(View.VISIBLE);
+        } else {
+            todayFeelsLike.setVisibility(View.GONE);
+        }
 
         String description = todayWeather.getDescription();
         if (description == null || description.isEmpty()) description = "Unknown";

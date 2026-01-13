@@ -17,6 +17,7 @@ public class Weather {
     private String country;
     private Date date;
     private double temperature;
+    private Double feelsLikeTemperature;
     private String description;
     private double wind;
     private Double windDirectionDegree;
@@ -109,6 +110,17 @@ public class Weather {
         this.temperature = temperature;
     }
 
+    public Double getFeelsLikeTemperature() {
+        return feelsLikeTemperature;
+    }
+
+    public void setFeelsLikeTemperature(Double feelsLikeTemperature) {
+        this.feelsLikeTemperature = feelsLikeTemperature;
+    }
+
+    public boolean isFeelsLikeTemperatureAvailable() {
+        return feelsLikeTemperature != null;
+    }
 
     public String getDescription() {
         return description != null ? description : "Unknown";
@@ -117,7 +129,6 @@ public class Weather {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public double getWind() {
         return wind;

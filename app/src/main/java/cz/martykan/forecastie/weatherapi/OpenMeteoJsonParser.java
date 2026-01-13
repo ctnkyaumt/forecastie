@@ -26,6 +26,7 @@ public class OpenMeteoJsonParser {
 
         JSONArray times = hourly.optJSONArray("time");
         JSONArray temperatures = hourly.optJSONArray("temperature_2m");
+        JSONArray apparentTemperatures = hourly.optJSONArray("apparent_temperature");
         JSONArray humidities = hourly.optJSONArray("relativehumidity_2m");
         JSONArray weatherCodes = hourly.optJSONArray("weathercode");
         JSONArray pressures = hourly.optJSONArray("pressure_msl");
@@ -52,6 +53,9 @@ public class OpenMeteoJsonParser {
             Weather weather = new Weather();
             weather.setDate(new Date(times.optLong(i, 0) * 1000));
             if (temperatures != null && i < temperatures.length()) weather.setTemperature(temperatures.optDouble(i, 0));
+            if (apparentTemperatures != null && i < apparentTemperatures.length()) {
+                weather.setFeelsLikeTemperature(apparentTemperatures.optDouble(i, 0));
+            }
             if (humidities != null && i < humidities.length()) weather.setHumidity(humidities.optInt(i, 0));
             if (weatherCodes != null && i < weatherCodes.length()) {
                 int code = weatherCodes.optInt(i, 0);
@@ -104,6 +108,10 @@ public class OpenMeteoJsonParser {
         // Open-Meteo current_weather doesn't have humidity/pressure, get from hourly if available
         JSONObject hourly = root.optJSONObject("hourly");
         if (hourly != null) {
+            JSONArray apparentTempArray = hourly.optJSONArray("apparent_temperature");
+            if (apparentTempArray != null && apparentTempArray.length() > 0) {
+                weather.setFeelsLikeTemperature(apparentTempArray.optDouble(0, 0));
+            }
             JSONArray humArray = hourly.optJSONArray("relativehumidity_2m");
             if (humArray != null && humArray.length() > 0) {
                 weather.setHumidity(humArray.optInt(0, 0));

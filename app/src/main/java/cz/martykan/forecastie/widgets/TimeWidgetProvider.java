@@ -65,6 +65,15 @@ public class TimeWidgetProvider extends AbstractWidgetProvider {
             remoteViews.setTextViewText(R.id.date, dateString);
             remoteViews.setTextViewText(R.id.widgetCity, this.getFormattedLocation(widgetWeather));
             remoteViews.setTextViewText(R.id.widgetTemperature, this.getFormattedTemperature(widgetWeather, context, sp));
+
+            String feelsLikeTemperature = this.getFormattedFeelsLikeTemperature(widgetWeather, context, sp);
+            if (feelsLikeTemperature != null) {
+                remoteViews.setTextViewText(R.id.widgetFeelsLike, context.getString(R.string.feels_like) + ": " + feelsLikeTemperature);
+                remoteViews.setViewVisibility(R.id.widgetFeelsLike, android.view.View.VISIBLE);
+            } else {
+                remoteViews.setViewVisibility(R.id.widgetFeelsLike, android.view.View.GONE);
+            }
+
             remoteViews.setTextViewText(R.id.widgetDescription, widgetWeather.getDescription());
             remoteViews.setImageViewBitmap(R.id.widgetIcon, getWeatherIcon(widgetWeather, context));
 

@@ -25,6 +25,7 @@
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
     <string name="uvindex">UV Index</string>
+    <string name="feels_like">Feels like</string>
     <string name="tap_for_graphs">Tap for Graphs</string>
 
     <!-- Graphs -->

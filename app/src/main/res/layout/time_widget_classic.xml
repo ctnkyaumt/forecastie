@@ -78,6 +78,18 @@
         android:layout_alignParentRight="true"/>
 
     <TextView
+        android:id="@+id/widgetFeelsLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/widgetTemperature"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        tools:text="Feels like: 0 °C"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+    <TextView
         android:id="@+id/widgetLastUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

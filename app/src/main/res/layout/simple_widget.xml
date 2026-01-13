@@ -28,6 +28,17 @@
         android:textColor="@color/text_light"/>
 
     <TextView
+        android:id="@+id/widgetFeelsLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/widgetTemperature"
+        android:layout_alignParentLeft="true"
+        android:visibility="gone"
+        android:textSize="10sp"
+        tools:text="Feels like: 0 °C"
+        android:textColor="@color/text_light"/>
+
+    <TextView
         android:id="@+id/widgetDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import cz.martykan.forecastie.AlarmReceiver;
 import cz.martykan.forecastie.R;
 import cz.martykan.forecastie.activities.MainActivity;
 import cz.martykan.forecastie.models.Weather;
@@ -32,8 +33,14 @@ import cz.martykan.forecastie.utils.formatters.WeatherFormatter;
 import cz.martykan.forecastie.weatherapi.WeatherStorage;
 
 public abstract class AbstractWidgetProvider extends AppWidgetProvider {
-    protected static final long DURATION_MINUTE = TimeUnit.SECONDS.toMillis(30);
+    protected static final long DURATION_MINUTE = TimeUnit.MINUTES.toMillis(1);
     protected static final String ACTION_UPDATE_TIME = "cz.martykan.forecastie.UPDATE_TIME";
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        AlarmReceiver.setRecurringAlarm(context.getApplicationContext());
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -170,6 +177,19 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
 
     protected String getFormattedTemperature(Weather weather, Context context, SharedPreferences sp) {
         float temperature = UnitConvertor.convertTemperature((float) weather.getTemperature(), sp);
+        if (sp.getBoolean("temperatureInteger", false)) {
+            temperature = Math.round(temperature);
+        }
+
+        return new DecimalFormat("#.#").format(temperature) + localize(sp, context, "unit", "C");
+    }
+
+    protected String getFormattedFeelsLikeTemperature(Weather weather, Context context, SharedPreferences sp) {
+        if (!weather.isFeelsLikeTemperatureAvailable()) {
+            return null;
+        }
+
+        float temperature = UnitConvertor.convertTemperature(weather.getFeelsLikeTemperature().floatValue(), sp);
         if (sp.getBoolean("temperatureInteger", false)) {
             temperature = Math.round(temperature);
         }
