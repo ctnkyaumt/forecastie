@@ -147,6 +147,29 @@
                                 android:textSize="72sp"/>
 
                             <TextView
+                                android:id="@+id/todayTemperature"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:paddingRight="42dp"
+                                tools:text="0 °C"
+                                android:textColor="@color/text_light"
+                                android:textSize="36sp"/>
+
+                            <TextView
+                                android:id="@+id/todayFeelsLike"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:paddingRight="42dp"
+                                android:visibility="gone"
+                                tools:text="Feels like: 0 °C"
+                                android:textColor="@color/text_light"
+                                android:textSize="16sp"/>
+
+                            <TextView
                                 android:id="@+id/tapGraph"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
