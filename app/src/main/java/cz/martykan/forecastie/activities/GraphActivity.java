@@ -168,7 +168,7 @@ public class GraphActivity extends BaseActivity {
         LineSet feelsLikeDataset = new LineSet();
         for (int i = 0; i < numWeatherData; i++) {
             float temperature = UnitConvertor.convertTemperature((float) weatherList.get(i).getTemperature(), sp);
-            float feelsLike = UnitConvertor.convertTemperature((float) weatherList.get(i).getFeelsLikeTemperature(), sp);
+            float feelsLike = weatherList.get(i).isFeelsLikeTemperatureAvailable() ? UnitConvertor.convertTemperature(weatherList.get(i).getFeelsLikeTemperature().floatValue(), sp) : Float.MIN_VALUE;
 
             minTemp = (float) Math.min(Math.floor(temperature), minTemp);
             maxTemp = (float) Math.max(Math.ceil(temperature), maxTemp);

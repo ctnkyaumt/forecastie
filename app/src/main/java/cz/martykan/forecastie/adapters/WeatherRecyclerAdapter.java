@@ -54,7 +54,7 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherViewHold
 
         // Temperature
         float temperature = UnitConvertor.convertTemperature((float) weatherItem.getTemperature(), sp);
-        float feelsLikeTemperature = UnitConvertor.convertTemperature((float) weatherItem.getFeelsLikeTemperature(), sp);
+        float feelsLikeTemperature = weatherItem.isFeelsLikeTemperatureAvailable() ? UnitConvertor.convertTemperature(weatherItem.getFeelsLikeTemperature().floatValue(), sp) : Float.MIN_VALUE;
         if (sp.getBoolean("temperatureInteger", false)) {
             temperature = Math.round(temperature);
             feelsLikeTemperature = Math.round(feelsLikeTemperature);
@@ -112,7 +112,7 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherViewHold
             customViewHolder.itemTemperature.setText(new DecimalFormat("#.#").format(temperature) + " " + sp.getString("unit", "°C"));
             customViewHolder.itemFeelsLike.setText(context.getString(R.string.feels_like) + ": " + new DecimalFormat("#.#").format(feelsLikeTemperature) + " " + sp.getString("unit", "°C"));
         }
-        if (weatherItem.getFeelsLikeTemperature() == Float.MIN_VALUE) {
+        if (!weatherItem.isFeelsLikeTemperatureAvailable()) {
             customViewHolder.itemFeelsLike.setVisibility(View.GONE);
         } else {
             customViewHolder.itemFeelsLike.setVisibility(View.VISIBLE);

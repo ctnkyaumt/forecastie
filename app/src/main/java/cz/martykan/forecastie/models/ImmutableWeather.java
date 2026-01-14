@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cz.martykan.forecastie.weatherapi.OpenMeteoJsonParser;
 import cz.martykan.forecastie.utils.Formatting;
 import cz.martykan.forecastie.utils.UnitConvertor;
 
