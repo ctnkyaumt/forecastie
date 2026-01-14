@@ -88,8 +88,10 @@ public class OpenMeteoJsonParser {
         JSONObject current = root.optJSONObject("current_weather");
         
         Weather weather = new Weather();
+        long currentTimeSec = 0;
         if (current != null) {
-            weather.setDate(new Date(current.optLong("time", 0) * 1000));
+            currentTimeSec = current.optLong("time", 0);
+            weather.setDate(new Date(currentTimeSec * 1000));
             weather.setTemperature(current.optDouble("temperature", 0) + 273.15);
             int code = current.optInt("weathercode", 0);
             weather.setWeatherId(mapWmoToOwm(code));
@@ -103,28 +105,42 @@ public class OpenMeteoJsonParser {
         weather.setLat(root.optDouble("latitude", 0));
         weather.setLon(root.optDouble("longitude", 0));
         
-        // Open-Meteo current_weather doesn't have humidity/pressure, get from hourly if available
+        // Open-Meteo current_weather doesn't have humidity/pressure/apparent_temperature, get from hourly if available
         JSONObject hourly = root.optJSONObject("hourly");
         if (hourly != null) {
+            int index = 0;
+            JSONArray timeArray = hourly.optJSONArray("time");
+            if (timeArray != null && timeArray.length() > 0 && currentTimeSec > 0) {
+                for (int i = 0; i < timeArray.length(); i++) {
+                    if (timeArray.optLong(i, -1) == currentTimeSec) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
             JSONArray apparentTempArray = hourly.optJSONArray("apparent_temperature");
-            if (apparentTempArray != null && apparentTempArray.length() > 0) {
-                weather.setFeelsLikeTemperature(apparentTempArray.optDouble(0, 0));
+            if (apparentTempArray != null && index < apparentTempArray.length()) {
+                double apparentC = apparentTempArray.optDouble(index, Double.NaN);
+                if (!Double.isNaN(apparentC)) {
+                    weather.setFeelsLikeTemperature(apparentC + 273.15);
+                }
             }
             JSONArray humArray = hourly.optJSONArray("relativehumidity_2m");
-            if (humArray != null && humArray.length() > 0) {
-                weather.setHumidity(humArray.optInt(0, 0));
+            if (humArray != null && index < humArray.length()) {
+                weather.setHumidity(humArray.optInt(index, 0));
             }
             JSONArray pressArray = hourly.optJSONArray("pressure_msl");
-            if (pressArray != null && pressArray.length() > 0) {
-                weather.setPressure(pressArray.optInt(0, 0));
+            if (pressArray != null && index < pressArray.length()) {
+                weather.setPressure(pressArray.optInt(index, 0));
             }
             JSONArray rainArray = hourly.optJSONArray("rain");
-            if (rainArray != null && rainArray.length() > 0) {
-                weather.setRain(rainArray.optDouble(0, 0));
+            if (rainArray != null && index < rainArray.length()) {
+                weather.setRain(rainArray.optDouble(index, 0));
             }
             JSONArray precipProbArray = hourly.optJSONArray("precipitation_probability");
-            if (precipProbArray != null && precipProbArray.length() > 0) {
-                weather.setChanceOfPrecipitation(precipProbArray.optDouble(0, 0) / 100.0);
+            if (precipProbArray != null && index < precipProbArray.length()) {
+                weather.setChanceOfPrecipitation(precipProbArray.optDouble(index, 0) / 100.0);
             }
         }
 

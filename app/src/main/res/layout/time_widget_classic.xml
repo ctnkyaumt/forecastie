@@ -33,12 +33,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/date"
         android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:gravity="center_vertical">
 
         <!-- Left Wrapper -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="start|center_vertical">
@@ -80,45 +81,53 @@
         <!-- Right Wrapper -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="end|center_vertical">
 
-            <TextView
-                android:id="@+id/widgetTemperature"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="0 °C"
-                android:textColor="@android:color/white"
-                android:textSize="48sp"/>
+                android:orientation="vertical"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp">
 
-            <TextView
-                android:id="@+id/widgetFeelsLike"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:text="Feels like: 0 °C"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/widgetTemperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="0 °C"
+                    android:textColor="@android:color/white"
+                    android:textSize="48sp"/>
 
-            <TextView
-                android:id="@+id/widgetHumidity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                tools:text="Humidity: 50%"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/widgetFeelsLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:text="Feels like: 0 °C"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/widgetLastUpdate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:visibility="gone"
-                tools:text="Last Update: 00:00" />
+                <TextView
+                    android:id="@+id/widgetHumidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    tools:text="Humidity: 50%"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/widgetLastUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone"
+                    tools:text="Last Update: 00:00" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
