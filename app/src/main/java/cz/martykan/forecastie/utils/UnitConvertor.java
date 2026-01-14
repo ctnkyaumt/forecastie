@@ -17,10 +17,13 @@ public class UnitConvertor {
         float result;
         switch (unit) {
             case "°C":
-                result = temperature;
+                result = temperature - 273.15f;
                 break;
             case "°F":
-                result = UnitConvertor.celsiusToFahrenheit(temperature);
+                result = (temperature - 273.15f) * 1.8f + 32;
+                break;
+            case "K":
+                result = temperature;
                 break;
             default:
                 result = temperature;

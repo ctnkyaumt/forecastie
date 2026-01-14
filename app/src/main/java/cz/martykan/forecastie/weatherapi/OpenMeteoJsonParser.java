@@ -52,9 +52,9 @@ public class OpenMeteoJsonParser {
         for (int i = 0; i < times.length(); i++) {
             Weather weather = new Weather();
             weather.setDate(new Date(times.optLong(i, 0) * 1000));
-            if (temperatures != null && i < temperatures.length()) weather.setTemperature(temperatures.optDouble(i, 0));
+            if (temperatures != null && i < temperatures.length()) weather.setTemperature(temperatures.optDouble(i, 0) + 273.15);
             if (apparentTemperatures != null && i < apparentTemperatures.length()) {
-                weather.setFeelsLikeTemperature(apparentTemperatures.optDouble(i, 0));
+                weather.setFeelsLikeTemperature(apparentTemperatures.optDouble(i, 0) + 273.15);
             }
             if (humidities != null && i < humidities.length()) weather.setHumidity(humidities.optInt(i, 0));
             if (weatherCodes != null && i < weatherCodes.length()) {
@@ -92,7 +92,7 @@ public class OpenMeteoJsonParser {
         Weather weather = new Weather();
         if (current != null) {
             weather.setDate(new Date(current.optLong("time", 0) * 1000));
-            weather.setTemperature(current.optDouble("temperature", 0));
+            weather.setTemperature(current.optDouble("temperature", 0) + 273.15);
             int code = current.optInt("weathercode", 0);
             weather.setWeatherId(mapWmoToOwm(code));
             weather.setDescription(mapWmoToDescription(code));

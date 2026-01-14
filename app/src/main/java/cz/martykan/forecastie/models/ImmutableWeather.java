@@ -104,13 +104,13 @@ public class ImmutableWeather implements Parcelable {
                     // Open-Meteo format
                     JSONObject current = reader.optJSONObject("current_weather");
                     if (current != null) {
-                        result.temperature = (float) current.optDouble("temperature", Float.MIN_VALUE);
+                        result.temperature = (float) current.optDouble("temperature", Float.MIN_VALUE) + 273.15f;
                     }
                     JSONObject hourly = reader.optJSONObject("hourly");
                     if (hourly != null) {
                         JSONArray apparentTempArray = hourly.optJSONArray("apparent_temperature");
                         if (apparentTempArray != null && apparentTempArray.length() > 0) {
-                            result.feelsLikeTemperature = (float) apparentTempArray.optDouble(0, Float.MIN_VALUE);
+                            result.feelsLikeTemperature = (float) apparentTempArray.optDouble(0, Float.MIN_VALUE) + 273.15f;
                         }
                         JSONArray humArray = hourly.optJSONArray("relativehumidity_2m");
                         if (humArray != null && humArray.length() > 0) {
@@ -169,6 +169,12 @@ public class ImmutableWeather implements Parcelable {
                 }
                 if (result.weatherIcon < -1)
                     result.weatherIcon = -1;
+
+                final JSONObject main = reader.optJSONObject("main");
+                if (main != null) {
+                    result.feelsLikeTemperature = getFloat("feels_like", Float.MIN_VALUE, main);
+                }
+                result.chanceOfPrecipitation = reader.optDouble("pop", -1);
 
                 final JSONObject sys = reader.optJSONObject("sys");
                 if (sys != null) {
