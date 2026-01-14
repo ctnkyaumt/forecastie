@@ -53,9 +53,7 @@ public class OpenMeteoJsonParser {
             Weather weather = new Weather();
             weather.setDate(new Date(times.optLong(i, 0) * 1000));
             if (temperatures != null && i < temperatures.length()) weather.setTemperature(temperatures.optDouble(i, 0) + 273.15);
-            if (apparentTemperatures != null && i < apparentTemperatures.length()) {
-                weather.setFeelsLikeTemperature(apparentTemperatures.optDouble(i, 0) + 273.15);
-            }
+            if (apparentTemperatures != null && i < apparentTemperatures.length()) weather.setFeelsLikeTemperature(apparentTemperatures.optDouble(i, 0) + 273.15);
             if (humidities != null && i < humidities.length()) weather.setHumidity(humidities.optInt(i, 0));
             if (weatherCodes != null && i < weatherCodes.length()) {
                 int code = weatherCodes.optInt(i, 0);
