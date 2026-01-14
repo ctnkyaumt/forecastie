@@ -255,7 +255,6 @@ public class MainActivity extends BaseActivity implements LocationListener {
             getTodayUVIndex();
         }
         if (firstRun) {
-            tapGraph.setText(getString(R.string.tap_for_graphs));
             prefs.edit().putBoolean("firstRun",false).commit();
         }
     }
