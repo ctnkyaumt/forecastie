@@ -65,6 +65,17 @@
         android:textColor="@color/text_light"/>
 
     <TextView
+        android:id="@+id/widgetHumidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/widgetFeelsLike"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:textSize="12sp"
+        tools:text="Humidity: 50%"
+        android:textColor="@color/text_light"/>
+
+    <TextView
         android:id="@+id/widgetDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

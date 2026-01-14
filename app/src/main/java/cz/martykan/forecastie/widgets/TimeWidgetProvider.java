@@ -74,6 +74,8 @@ public class TimeWidgetProvider extends AbstractWidgetProvider {
                 remoteViews.setViewVisibility(R.id.widgetFeelsLike, android.view.View.GONE);
             }
 
+            remoteViews.setTextViewText(R.id.widgetHumidity, context.getString(R.string.humidity) + ": " + widgetWeather.getHumidity() + " %");
+
             remoteViews.setTextViewText(R.id.widgetDescription, widgetWeather.getDescription());
             remoteViews.setImageViewBitmap(R.id.widgetIcon, getWeatherIcon(widgetWeather, context));
 

@@ -169,18 +169,6 @@
                                 android:textColor="@color/text_light"
                                 android:textSize="16sp"/>
 
-                            <TextView
-                                android:id="@+id/tapGraph"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:paddingRight="42dp"
-                                android:layout_marginTop="-20dp"
-                                android:textColor="@color/text_light"
-                                android:text=""
-                                android:textSize="14sp" />
-
 
                         </LinearLayout>
 

@@ -168,7 +168,6 @@ public class MainActivity extends BaseActivity implements LocationListener {
         todayUvIndex = findViewById(R.id.todayUvIndex);
         lastUpdate = findViewById(R.id.lastUpdate);
         todayIcon = findViewById(R.id.todayIcon);
-        tapGraph = findViewById(R.id.tapGraph);
         linearLayoutTapForGraphs = findViewById(R.id.linearLayout_tap_for_graphs);
         Typeface weatherFont = Typeface.createFromAsset(this.getAssets(), "fonts/weather.ttf");
         todayIcon.setTypeface(weatherFont);

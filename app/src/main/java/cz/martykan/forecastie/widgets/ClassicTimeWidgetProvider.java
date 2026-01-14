@@ -40,8 +40,6 @@ public class ClassicTimeWidgetProvider extends AbstractWidgetProvider {
                 ? PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE)
                 : PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            remoteViews.setOnClickPendingIntent(R.id.widgetButtonRefresh, pendingIntent);
-
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
             Weather widgetWeather = this.getTodayWeather(context);
 
@@ -82,6 +80,8 @@ public class ClassicTimeWidgetProvider extends AbstractWidgetProvider {
             } else {
                 remoteViews.setViewVisibility(R.id.widgetFeelsLike, android.view.View.GONE);
             }
+
+            remoteViews.setTextViewText(R.id.widgetHumidity, context.getString(R.string.humidity) + ": " + widgetWeather.getHumidity() + " %");
 
             remoteViews.setTextViewText(R.id.widgetDescription, widgetWeather.getDescription());
             remoteViews.setImageViewBitmap(R.id.widgetIcon, getWeatherIcon(widgetWeather, context));

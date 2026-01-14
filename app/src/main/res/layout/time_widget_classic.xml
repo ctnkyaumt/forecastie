@@ -29,74 +29,99 @@
         android:layout_centerHorizontal="true" />
 
     <LinearLayout
-        android:id="@+id/textHolder"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/date">
+        android:layout_below="@id/date"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
-        <TextView
-            android:id="@+id/widgetDescription"
+        <!-- Left Wrapper -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="start|center_vertical">
+
+            <LinearLayout
+                android:id="@+id/textHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/widgetDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Clear Sky"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/widgetCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:text="City name, AB"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Icon (Centered) -->
+        <ImageView
+            android:id="@+id/widgetIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Clear Sky"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:layout_gravity="center"
+            tools:src="@drawable/ic_cloud_white_48dp"/>
 
-        <TextView
-            android:id="@+id/widgetCity"
-            android:layout_width="wrap_content"
+        <!-- Right Wrapper -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            tools:text="City name, AB"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="end|center_vertical">
+
+            <TextView
+                android:id="@+id/widgetTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="0 °C"
+                android:textColor="@android:color/white"
+                android:textSize="48sp"/>
+
+            <TextView
+                android:id="@+id/widgetFeelsLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:text="Feels like: 0 °C"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/widgetHumidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                tools:text="Humidity: 50%"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/widgetLastUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:visibility="gone"
+                tools:text="Last Update: 00:00" />
+        </LinearLayout>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/widgetIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/date"
-        android:layout_toEndOf="@id/textHolder"
-        android:layout_toRightOf="@id/textHolder"
-        android:layout_toLeftOf="@+id/widgetTemperature"
-        android:layout_toStartOf="@+id/widgetTemperature"
-        tools:src="@drawable/ic_cloud_white_48dp"/>
-
-    <TextView
-        android:id="@+id/widgetTemperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="0 °C"
-        android:textColor="@android:color/white"
-        android:textSize="48sp"
-        android:layout_below="@id/date"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"/>
-
-    <TextView
-        android:id="@+id/widgetFeelsLike"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/widgetTemperature"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:visibility="gone"
-        tools:text="Feels like: 0 °C"
-        android:textColor="@android:color/white"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/widgetLastUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:visibility="gone"
-        tools:text="Last Update: 00:00" />
 
     <ImageButton
         android:id="@+id/widgetButtonRefresh"
