@@ -94,6 +94,7 @@ public class ImmutableWeather implements Parcelable {
                     result.temperature = getFloat("temp", Float.MIN_VALUE, main);
                     result.pressure = getDouble("pressure", Double.MIN_VALUE, main);
                     result.humidity = getInt("humidity", -1, main);
+                    result.feelsLikeTemperature = getFloat("feels_like", Float.MIN_VALUE, main);
 
                     final JSONObject rain = reader.optJSONObject("rain");
                     if (rain != null) {
@@ -170,10 +171,6 @@ public class ImmutableWeather implements Parcelable {
                 if (result.weatherIcon < -1)
                     result.weatherIcon = -1;
 
-                final JSONObject main = reader.optJSONObject("main");
-                if (main != null) {
-                    result.feelsLikeTemperature = getFloat("feels_like", Float.MIN_VALUE, main);
-                }
                 result.chanceOfPrecipitation = reader.optDouble("pop", -1);
 
                 final JSONObject sys = reader.optJSONObject("sys");
