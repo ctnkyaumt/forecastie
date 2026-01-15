@@ -75,13 +75,13 @@ public class ClassicTimeWidgetProvider extends AbstractWidgetProvider {
 
             String feelsLikeTemperature = this.getFormattedFeelsLikeTemperature(widgetWeather, context, sp);
             if (feelsLikeTemperature != null) {
-                remoteViews.setTextViewText(R.id.widgetFeelsLike, context.getString(R.string.feels_like) + ": " + feelsLikeTemperature);
+                remoteViews.setTextViewText(R.id.widgetFeelsLike, feelsLikeTemperature);
                 remoteViews.setViewVisibility(R.id.widgetFeelsLike, android.view.View.VISIBLE);
             } else {
                 remoteViews.setViewVisibility(R.id.widgetFeelsLike, android.view.View.GONE);
             }
 
-            remoteViews.setTextViewText(R.id.widgetHumidity, context.getString(R.string.humidity) + ": " + widgetWeather.getHumidity() + " %");
+            remoteViews.setTextViewText(R.id.widgetHumidity, widgetWeather.getHumidity() + " %");
 
             remoteViews.setTextViewText(R.id.widgetDescription, widgetWeather.getDescription());
             remoteViews.setImageViewBitmap(R.id.widgetIcon, getWeatherIcon(widgetWeather, context));

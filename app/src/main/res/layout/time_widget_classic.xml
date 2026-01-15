@@ -97,40 +97,27 @@
                     android:id="@+id/widgetTemperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="24sp"
-                    android:autoSizeMaxTextSize="48sp"
-                    android:autoSizeStepGranularity="2sp"
                     tools:text="0 °C"
                     android:textColor="@android:color/white"
-                    android:textSize="48sp"/>
+                    android:textSize="44sp"/>
 
                 <TextView
                     android:id="@+id/widgetFeelsLike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:singleLine="true"
                     android:visibility="gone"
-                    tools:text="Feels like: 0 °C"
+                    tools:text="0 °C"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/widgetHumidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:singleLine="true"
                     android:visibility="visible"
-                    tools:text="Humidity: 50%"
+                    tools:text="50%"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/widgetLastUpdate"

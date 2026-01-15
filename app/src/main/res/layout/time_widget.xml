@@ -47,13 +47,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="14sp"
-        android:autoSizeMaxTextSize="24sp"
-        android:autoSizeStepGranularity="1sp"
         android:textSize="24sp"
         android:textStyle="bold"
         tools:text="0 °C"
@@ -66,12 +59,9 @@
         android:layout_below="@id/widgetTemperature"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:singleLine="true"
         android:visibility="gone"
         android:textSize="12sp"
-        tools:text="Feels like: 0 °C"
+        tools:text="0 °C"
         android:textColor="@color/text_light"/>
 
     <TextView
@@ -81,11 +71,8 @@
         android:layout_below="@id/widgetFeelsLike"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:singleLine="true"
         android:textSize="12sp"
-        tools:text="Humidity: 50%"
+        tools:text="50%"
         android:textColor="@color/text_light"/>
 
     <TextView
