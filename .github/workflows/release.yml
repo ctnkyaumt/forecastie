@@ -1,10 +1,17 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
   release:
@@ -15,6 +22,59 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract and Bump Version
+        id: version
+        run: |
+          # Extract current version info
+          VERSION_NAME=$(grep "versionName" app/build.gradle | awk -F'"' '{print $2}')
+          VERSION_CODE=$(grep "versionCode" app/build.gradle | awk '{print $2}')
+          
+          echo "Current Version: $VERSION_NAME ($VERSION_CODE)"
+          
+          # Split version name into major, minor, patch
+          IFS='.' read -r major minor patch <<< "$VERSION_NAME"
+          major=${major:-0}
+          minor=${minor:-0}
+          patch=${patch:-0}
+          
+          # Bump based on input
+          if [[ "${{ github.event.inputs.bump_type }}" == "major" ]]; then
+            major=$((major + 1))
+            minor=0
+            patch=0
+          elif [[ "${{ github.event.inputs.bump_type }}" == "minor" ]]; then
+            minor=$((minor + 1))
+            patch=0
+          else
+            patch=$((patch + 1))
+          fi
+          
+          NEW_VERSION_NAME="$major.$minor.$patch"
+          NEW_VERSION_CODE=$((VERSION_CODE + 1))
+          
+          echo "New Version: $NEW_VERSION_NAME ($NEW_VERSION_CODE)"
+          
+          # Update build.gradle
+          sed -i "s/versionCode $VERSION_CODE/versionCode $NEW_VERSION_CODE/" app/build.gradle
+          sed -i "s/versionName \"$VERSION_NAME\"/versionName \"$NEW_VERSION_NAME\"/" app/build.gradle
+          
+          # Set outputs
+          echo "new_tag=v$NEW_VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "new_version=$NEW_VERSION_NAME" >> $GITHUB_OUTPUT
+
+      - name: Commit and Push Version Bump
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add app/build.gradle
+          git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
+          git push
+          
+          # Create and push tag
+          git tag ${{ steps.version.outputs.new_tag }}
+          git push origin ${{ steps.version.outputs.new_tag }}
 
       - name: set up JDK 17
         uses: actions/setup-java@v4
@@ -44,6 +104,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.new_tag }}
           files: ${{ steps.sign_app.outputs.signedReleaseFile }}
           generate_release_notes: true
         env:
