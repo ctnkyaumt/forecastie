@@ -38,31 +38,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="6dp"
-                    android:layout_marginBottom="22dp"
-                    android:baselineAligned="false"
+                    android:layout_marginBottom="0dp"
+                    android:orientation="vertical"
                     android:paddingTop="?attr/actionBarSize">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/todayTemperature"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            tools:text="0 °C"
-                            android:textColor="@color/text_light"
-                            android:textSize="36sp"/>
-
-                        <TextView
-                            android:id="@+id/todayFeelsLike"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            tools:text="Feels like: 0 °C"
-                            android:textColor="@color/text_light"
-                            android:textSize="16sp"/>
 
                         <TextView
                             android:id="@+id/todayDescription"
@@ -124,7 +113,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_weight="1"
                         android:orientation="vertical">
@@ -141,7 +130,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:paddingRight="42dp"
+                                android:paddingEnd="24dp"
+                                android:paddingRight="24dp"
                                 android:textColor="@color/text_light"
                                 android:text=""
                                 android:textSize="72sp"/>
@@ -152,7 +142,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:paddingRight="42dp"
+                                android:paddingEnd="24dp"
+                                android:paddingRight="24dp"
                                 tools:text="0 °C"
                                 android:textColor="@color/text_light"
                                 android:textSize="36sp"/>
@@ -163,7 +154,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:paddingRight="42dp"
+                                android:paddingEnd="24dp"
+                                android:paddingRight="24dp"
                                 android:visibility="gone"
                                 tools:text="Feels like: 0 °C"
                                 android:textColor="@color/text_light"
@@ -171,23 +163,22 @@
 
 
                         </LinearLayout>
-
-
-
-
-
-
-                        <TextView
-                            android:id="@+id/lastUpdate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="bottom|end"
-                            android:gravity="bottom|end"
-                            android:paddingRight="16dp"
-                            android:textAlignment="viewEnd"
-                            android:textSize="14sp"/>
                     </LinearLayout>
 
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/lastUpdate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:paddingEnd="24dp"
+                        android:paddingRight="24dp"
+                        android:textAlignment="viewEnd"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:textSize="12sp"/>
 
                 </LinearLayout>
 

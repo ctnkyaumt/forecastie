@@ -76,7 +76,11 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
 
     protected void openMainActivity(Context context, RemoteViews remoteViews) {
         Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, flags);
         remoteViews.setOnClickPendingIntent(R.id.widgetRoot, pendingIntent);
     }
 
@@ -181,7 +185,11 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
     protected PendingIntent getTimeIntent(Context context) {
         Intent intent = new Intent(context, this.getClass());
         intent.setAction(ACTION_UPDATE_TIME);
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        int flags = PendingIntent.FLAG_CANCEL_CURRENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        return PendingIntent.getBroadcast(context, 0, intent, flags);
     }
 
     protected String getFormattedTemperature(Weather weather, Context context, SharedPreferences sp) {
