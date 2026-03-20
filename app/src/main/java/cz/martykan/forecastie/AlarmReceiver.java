@@ -59,12 +59,16 @@ public class AlarmReceiver extends BroadcastReceiver {
                 WeatherNotificationService.start(context);
             }
         } else if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-            // Get weather if last attempt failed or if 'update location in background' is activated
+            // Get weather if last attempt failed, if 'update location in background' is activated,
+            // or if connectivity was just restored (refresh widgets)
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
             String interval = sp.getString("refreshInterval", "1");
-            if (!interval.equals("0") &&
-                    (sp.getBoolean("backgroundRefreshFailed", false) || isUpdateLocation())) {
-                getWeather();
+            if (!interval.equals("0")) {
+                boolean wasFailed = sp.getBoolean("backgroundRefreshFailed", false);
+                boolean isNetworkAvailable = isNetworkAvailable();
+                if (wasFailed || isUpdateLocation() || isNetworkAvailable) {
+                    getWeather();
+                }
             }
         } else if (Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) {
             WeatherNotificationService.updateNotificationChannelIfNeeded(context);

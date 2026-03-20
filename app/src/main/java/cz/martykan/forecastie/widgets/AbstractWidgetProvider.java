@@ -152,9 +152,13 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
             cancelUpdate(context);
             return;
         }
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String intervalPref = sp.getString("refreshInterval", "1");
+        long intervalMillis = intervalMillisForWidget(intervalPref);
+        
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long now = new Date().getTime();
-        long nextUpdate = now + DURATION_MINUTE - now % DURATION_MINUTE;
+        long nextUpdate = now + intervalMillis - now % intervalMillis;
         if (Build.VERSION.SDK_INT >= 19) {
             // Check if we can schedule exact alarms
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -180,6 +184,26 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
     private boolean shouldUpdate(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return !sp.getString("refreshInterval", "1").equals("0");
+    }
+
+    private long intervalMillisForWidget(String intervalPref) {
+        int interval = Integer.parseInt(intervalPref);
+        switch (interval) {
+            case 0:
+                return 0; // special case for cancel
+            case 15:
+                return TimeUnit.MINUTES.toMillis(15);
+            case 30:
+                return TimeUnit.MINUTES.toMillis(30);
+            case 1:
+                return TimeUnit.HOURS.toMillis(1);
+            case 12:
+                return TimeUnit.HOURS.toMillis(12);
+            case 24:
+                return TimeUnit.HOURS.toMillis(24);
+            default: // cases 2 and 6 (or any number of hours)
+                return TimeUnit.HOURS.toMillis(interval);
+        }
     }
 
     protected PendingIntent getTimeIntent(Context context) {
