@@ -49,6 +49,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) || packageReplacedAction) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+            // Initialize network state tracking
+            sp.edit().putBoolean("wasNetworkAvailable", isNetworkAvailable()).apply();
+            
             String interval = sp.getString("refreshInterval", "1");
             if (!interval.equals("0")) {
                 setRecurringAlarm(context);
@@ -65,8 +68,14 @@ public class AlarmReceiver extends BroadcastReceiver {
             String interval = sp.getString("refreshInterval", "1");
             if (!interval.equals("0")) {
                 boolean wasFailed = sp.getBoolean("backgroundRefreshFailed", false);
-                boolean isNetworkAvailable = isNetworkAvailable();
-                if (wasFailed || isUpdateLocation() || isNetworkAvailable) {
+                boolean isNetworkNowAvailable = isNetworkAvailable();
+                boolean wasNetworkPreviouslyAvailable = sp.getBoolean("wasNetworkAvailable", true);
+                boolean isNetworkRestored = isNetworkNowAvailable && !wasNetworkPreviouslyAvailable;
+                
+                // Update the network state for next time
+                sp.edit().putBoolean("wasNetworkAvailable", isNetworkNowAvailable).apply();
+                
+                if (wasFailed || isUpdateLocation() || isNetworkRestored) {
                     getWeather();
                 }
             }
