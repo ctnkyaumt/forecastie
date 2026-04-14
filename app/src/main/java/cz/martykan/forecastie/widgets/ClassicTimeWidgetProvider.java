@@ -1,10 +1,7 @@
 package cz.martykan.forecastie.widgets;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -14,18 +11,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import cz.martykan.forecastie.AlarmReceiver;
 import cz.martykan.forecastie.R;
 import cz.martykan.forecastie.models.Weather;
 
 public class ClassicTimeWidgetProvider extends AbstractWidgetProvider {
-
-    private static final String TAG = "TimeWidgetProvider";
-
-    private static final String ACTION_UPDATE_TIME = "cz.martykan.forecastie.UPDATE_TIME";
-
-    //private static final long DURATION_MINUTE = TimeUnit.SECONDS.toMillis(30);
-
+    private static final String TAG = "ClassicTimeWidget";
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int widgetId : appWidgetIds) {
@@ -91,53 +81,4 @@ public class ClassicTimeWidgetProvider extends AbstractWidgetProvider {
             scheduleNextUpdate(context);
         }
     }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (ACTION_UPDATE_TIME.equals(intent.getAction())) {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            ComponentName provider = new ComponentName(context.getPackageName(), getClass().getName());
-            int ids[] = appWidgetManager.getAppWidgetIds(provider);
-            onUpdate(context, appWidgetManager, ids);
-        } else {
-            super.onReceive(context, intent);
-        }
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        super.onDisabled(context);
-
-        Log.d(TAG, "Disable time widget updates");
-        cancelUpdate(context);
-    }
-
-    /*
-    private static void scheduleNextUpdate(Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        long now = new Date().getTime();
-        long nextUpdate = now + DURATION_MINUTE - now % DURATION_MINUTE;
-        if (BuildConfig.DEBUG) {
-            Log.v(TAG, "Next widget update: " +
-                    android.text.format.DateFormat.getTimeFormat(context).format(new Date(nextUpdate)));
-        }
-        if (Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC, nextUpdate, getTimeIntent(context));
-        } else {
-            alarmManager.set(AlarmManager.RTC, nextUpdate, getTimeIntent(context));
-        }
-    }
-
-    private static void cancelUpdate(Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(getTimeIntent(context));
-    }
-
-    private static PendingIntent getTimeIntent(Context context) {
-        Intent intent = new Intent(context, TimeWidgetProvider.class);
-        intent.setAction(ACTION_UPDATE_TIME);
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-    }
-    */
-
 }

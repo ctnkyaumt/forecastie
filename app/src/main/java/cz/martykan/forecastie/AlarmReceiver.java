@@ -17,19 +17,14 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import cz.martykan.forecastie.activities.MainActivity;
 import cz.martykan.forecastie.notifications.WeatherNotificationService;
-import cz.martykan.forecastie.utils.Language;
 import cz.martykan.forecastie.weatherapi.WeatherStorage;
 import cz.martykan.forecastie.widgets.AbstractWidgetProvider;
 
@@ -49,9 +44,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) || packageReplacedAction) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-            // Initialize network state tracking
-            sp.edit().putBoolean("wasNetworkAvailable", isNetworkAvailable()).apply();
-            
             String interval = sp.getString("refreshInterval", "1");
             if (!interval.equals("0")) {
                 setRecurringAlarm(context);
@@ -68,15 +60,15 @@ public class AlarmReceiver extends BroadcastReceiver {
             String interval = sp.getString("refreshInterval", "1");
             if (!interval.equals("0")) {
                 boolean wasFailed = sp.getBoolean("backgroundRefreshFailed", false);
-                boolean isNetworkNowAvailable = isNetworkAvailable();
-                boolean wasNetworkPreviouslyAvailable = sp.getBoolean("wasNetworkAvailable", true);
-                boolean isNetworkRestored = isNetworkNowAvailable && !wasNetworkPreviouslyAvailable;
-                
-                // Update the network state for next time
-                sp.edit().putBoolean("wasNetworkAvailable", isNetworkNowAvailable).apply();
-                
-                if (wasFailed || isUpdateLocation() || isNetworkRestored) {
-                    getWeather();
+                // Use intent extras to detect network restoration (more reliable than SharedPreferences)
+                boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true);
+                boolean isNetworkRestored = !noConnectivity;
+                NetworkInfo networkInfo = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+                // Only trigger if this is a real connectivity change, not just a duplicate broadcast
+                if (networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                    if (wasFailed || isUpdateLocation() || isNetworkRestored) {
+                        getWeather();
+                    }
                 }
             }
         } else if (Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) {
@@ -89,22 +81,24 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void getWeather() {
         Log.d("Alarm", "Recurring alarm; requesting download service.");
-        boolean failed;
         if (isNetworkAvailable()) {
-            failed = false;
             if (isUpdateLocation()) {
-                new GetLocationAndWeatherTask().execute(); // This method calls the two methods below once it has determined a location
+                new GetLocationAndWeatherTask().execute();
             } else {
                 new GetWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 new GetLongTermWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
+            // Clear failed flag - tasks will set it in onPostExecute if they fail
+            SharedPreferences.Editor editor =
+                    PreferenceManager.getDefaultSharedPreferences(context).edit();
+            editor.putBoolean("backgroundRefreshFailed", false);
+            editor.apply();
         } else {
-            failed = true;
+            SharedPreferences.Editor editor =
+                    PreferenceManager.getDefaultSharedPreferences(context).edit();
+            editor.putBoolean("backgroundRefreshFailed", true);
+            editor.apply();
         }
-        SharedPreferences.Editor editor =
-                PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putBoolean("backgroundRefreshFailed", failed);
-        editor.apply();
     }
 
     private boolean isNetworkAvailable() {
@@ -169,6 +163,14 @@ public class AlarmReceiver extends BroadcastReceiver {
             // Update widgets
             AbstractWidgetProvider.updateWidgets(context);
         }
+
+        protected void onCancelled() {
+            // Task was cancelled (e.g. lost network during fetch)
+            SharedPreferences.Editor editor =
+                    PreferenceManager.getDefaultSharedPreferences(context).edit();
+            editor.putBoolean("backgroundRefreshFailed", true);
+            editor.apply();
+        }
     }
 
     class GetLongTermWeatherTask extends AsyncTask<String, String, Void> {
@@ -218,7 +220,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         protected void onPostExecute(Void v) {
-
+            // Nothing extra needed for long-term task
         }
     }
 
@@ -317,7 +319,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
 
-    private static long intervalMillisForRecurringAlarm(String intervalPref) {
+    public static long intervalMillisForRecurringAlarm(String intervalPref) {
         int interval = Integer.parseInt(intervalPref);
         switch (interval) {
             case 0:

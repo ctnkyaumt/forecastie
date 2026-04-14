@@ -86,6 +86,8 @@ public class TimeWidgetProvider extends AbstractWidgetProvider {
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
-        scheduleNextUpdate(context);
+        if (appWidgetIds.length > 0) {
+            scheduleNextUpdate(context);
+        }
     }
 }
