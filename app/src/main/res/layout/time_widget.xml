@@ -36,17 +36,20 @@
 
     <ImageView
         android:id="@+id/widgetIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_above="@id/widgetTempContainer"
         android:layout_centerHorizontal="true"
+        android:scaleType="fitCenter"
         tools:src="@drawable/ic_cloud_white_24dp"/>
 
     <LinearLayout
         android:id="@+id/widgetTempContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/widgetIcon"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
         <TextView
