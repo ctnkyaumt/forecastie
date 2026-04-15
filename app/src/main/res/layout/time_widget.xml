@@ -39,56 +39,62 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
         tools:src="@drawable/ic_cloud_white_24dp"/>
 
-    <TextView
-        android:id="@+id/widgetTemperature"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:ellipsize="none"
-        android:singleLine="true"
-        android:textSize="19sp"
-        android:textStyle="bold"
-        tools:text="0 °C"
-        android:textColor="@color/text_light"/>
+        android:layout_below="@id/widgetIcon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <TextView
-        android:id="@+id/widgetFeelsLike"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/widgetTemperature"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:ellipsize="none"
-        android:singleLine="true"
-        android:visibility="gone"
-        android:textSize="12sp"
-        tools:text="0 °C"
-        android:textColor="@color/text_light"/>
+        <TextView
+            android:id="@+id/widgetTemperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="none"
+            android:singleLine="true"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            tools:text="0 °C"
+            android:textColor="@color/text_light"/>
 
-    <TextView
-        android:id="@+id/widgetHumidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/widgetFeelsLike"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:ellipsize="none"
-        android:singleLine="true"
-        android:textSize="12sp"
-        tools:text="50%"
-        android:textColor="@color/text_light"/>
+        <TextView
+            android:id="@+id/widgetFeelsLike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:ellipsize="none"
+            android:singleLine="true"
+            android:visibility="gone"
+            android:textSize="12sp"
+            tools:text="0 °C"
+            android:textColor="@color/text_light"/>
+
+        <TextView
+            android:id="@+id/widgetHumidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:ellipsize="none"
+            android:singleLine="true"
+            android:textSize="12sp"
+            tools:text="50%"
+            android:textColor="@color/text_light"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/widgetDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:textSize="16sp"
+        android:layout_centerHorizontal="true"
+        android:textSize="14sp"
         tools:text="Clear Sky"
         android:textColor="@color/text_light" />
 
