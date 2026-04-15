@@ -25,6 +25,7 @@ public class ClassicTimeWidgetProvider extends AbstractWidgetProvider {
 
                 setTheme(context, remoteViews);
                 openMainActivity(context, remoteViews);
+                setRefreshButton(context, remoteViews);
 
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
                 Weather widgetWeather = this.getTodayWeather(context);

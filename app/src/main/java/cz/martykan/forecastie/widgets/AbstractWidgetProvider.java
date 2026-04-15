@@ -82,6 +82,17 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.widgetRoot, pendingIntent);
     }
 
+    protected void setRefreshButton(Context context, RemoteViews remoteViews) {
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setAction(AlarmReceiver.ACTION_REFRESH);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, flags);
+        remoteViews.setOnClickPendingIntent(R.id.widgetButtonRefresh, pendingIntent);
+    }
+
     protected String getFormattedLocation(Weather weather) {
         String city = weather.getCity();
         String country = weather.getCountry();

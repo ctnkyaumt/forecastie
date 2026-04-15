@@ -1,11 +1,8 @@
 package cz.martykan.forecastie.widgets;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
@@ -13,7 +10,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import cz.martykan.forecastie.AlarmReceiver;
 import cz.martykan.forecastie.R;
 import cz.martykan.forecastie.models.Weather;
 
@@ -26,12 +22,7 @@ public class TimeWidgetProvider extends AbstractWidgetProvider {
 
             setTheme(context, remoteViews);
             openMainActivity(context, remoteViews);
-
-            Intent intent = new Intent(context, AlarmReceiver.class);
-            PendingIntent pendingIntent = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
-                    ? PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE)
-                    : PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.widgetButtonRefresh, pendingIntent);
+            setRefreshButton(context, remoteViews);
 
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
             Weather widgetWeather = this.getTodayWeather(context);
@@ -79,7 +70,7 @@ public class TimeWidgetProvider extends AbstractWidgetProvider {
             remoteViews.setTextViewText(R.id.widgetDescription, widgetWeather.getDescription());
             remoteViews.setImageViewBitmap(R.id.widgetIcon, getWeatherIcon(widgetWeather, context));
 
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                 if (dateString.length() > 19)
                     remoteViews.setViewPadding(R.id.widgetIcon, 40, 0, 0, 0);
             }

@@ -103,10 +103,14 @@
 
     <ImageButton
         android:id="@+id/widgetButtonRefresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:background="@android:color/transparent"
-        android:visibility="gone"
-        android:src="@drawable/ic_refresh_white_36dp" />
+        android:src="@drawable/ic_refresh_white_18dp"
+        android:contentDescription="@string/action_refresh"
+        android:scaleType="fitCenter" />
 
 </RelativeLayout>

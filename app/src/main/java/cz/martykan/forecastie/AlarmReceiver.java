@@ -30,6 +30,8 @@ import cz.martykan.forecastie.widgets.AbstractWidgetProvider;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
+    public static final String ACTION_REFRESH = "cz.martykan.forecastie.ACTION_REFRESH";
+
     Context context;
 
     @Override
@@ -53,24 +55,9 @@ public class AlarmReceiver extends BroadcastReceiver {
             if (sp.getBoolean(enableNotificationKey, false)) {
                 WeatherNotificationService.start(context);
             }
-        } else if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-            // Get weather if last attempt failed, if 'update location in background' is activated,
-            // or if connectivity was just restored (refresh widgets)
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-            String interval = sp.getString("refreshInterval", "1");
-            if (!interval.equals("0")) {
-                boolean wasFailed = sp.getBoolean("backgroundRefreshFailed", false);
-                // Use intent extras to detect network restoration (more reliable than SharedPreferences)
-                boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true);
-                boolean isNetworkRestored = !noConnectivity;
-                NetworkInfo networkInfo = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-                // Only trigger if this is a real connectivity change, not just a duplicate broadcast
-                if (networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED) {
-                    if (wasFailed || isUpdateLocation() || isNetworkRestored) {
-                        getWeather();
-                    }
-                }
-            }
+        } else if (ACTION_REFRESH.equals(intent.getAction())) {
+            // Manual refresh from widget refresh button
+            getWeather();
         } else if (Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) {
             WeatherNotificationService.updateNotificationChannelIfNeeded(context);
             getWeather();

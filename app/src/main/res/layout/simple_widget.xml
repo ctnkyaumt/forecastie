@@ -67,4 +67,16 @@
         android:layout_alignParentRight="true"
         tools:src="@drawable/ic_cloud_white_24dp"/>
 
+    <ImageButton
+        android:id="@+id/widgetButtonRefresh"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_refresh_white_18dp"
+        android:contentDescription="@string/action_refresh"
+        android:scaleType="fitCenter" />
+
 </RelativeLayout>
