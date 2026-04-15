@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_card"
-    android:padding="8dp">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/widgetCity"
@@ -60,12 +60,11 @@
 
     <ImageView
         android:id="@+id/widgetIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="4dp"
         android:scaleType="fitCenter"
         tools:src="@drawable/ic_cloud_white_24dp"/>
 
