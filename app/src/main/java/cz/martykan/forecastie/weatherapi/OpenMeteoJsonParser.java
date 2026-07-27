@@ -3,6 +3,7 @@ package cz.martykan.forecastie.weatherapi;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +17,46 @@ import java.util.List;
 import cz.martykan.forecastie.models.Weather;
 
 public class OpenMeteoJsonParser {
+    private static final double KELVIN_OFFSET = 273.15;
+
+    /**
+     * Index of the hourly slot covering {@code currentTimeSec}.
+     * <p>
+     * {@code current_weather.time} sits on a 15 minute grid while {@code hourly.time} is on the
+     * hour, so the two rarely match exactly - the slot to use is the last one that has already
+     * started.
+     *
+     * @param times          {@code hourly.time}, ascending unix seconds, may be null
+     * @param currentTimeSec reference time in unix seconds, 0 to use the current time
+     */
+    public static int hourlyIndexFor(@Nullable JSONArray times, long currentTimeSec) {
+        if (times == null || times.length() == 0) {
+            return 0;
+        }
+        if (currentTimeSec <= 0) {
+            currentTimeSec = System.currentTimeMillis() / 1000L;
+        }
+
+        int index = 0;
+        for (int i = 0; i < times.length(); i++) {
+            long time = times.optLong(i, Long.MAX_VALUE);
+            if (time > currentTimeSec) {
+                break;
+            }
+            index = i;
+        }
+        return index;
+    }
+
+    /** Celsius value at [index] converted to kelvins, or null when the API left it out. */
+    @Nullable
+    private static Double kelvinAt(@Nullable JSONArray celsius, int index) {
+        if (celsius == null || index < 0 || index >= celsius.length()) {
+            return null;
+        }
+        double value = celsius.optDouble(index, Double.NaN);
+        return Double.isNaN(value) ? null : value + KELVIN_OFFSET;
+    }
 
     @NonNull
     public static List<Weather> convertJsonToWeatherList(String jsonString) throws JSONException {
@@ -52,8 +93,9 @@ public class OpenMeteoJsonParser {
         for (int i = 0; i < times.length(); i++) {
             Weather weather = new Weather();
             weather.setDate(new Date(times.optLong(i, 0) * 1000));
-            if (temperatures != null && i < temperatures.length()) weather.setTemperature(temperatures.optDouble(i, 0) + 273.15);
-            if (apparentTemperatures != null && i < apparentTemperatures.length()) weather.setFeelsLikeTemperature(apparentTemperatures.optDouble(i, 0) + 273.15);
+            Double temperature = kelvinAt(temperatures, i);
+            if (temperature != null) weather.setTemperature(temperature);
+            weather.setFeelsLikeTemperature(kelvinAt(apparentTemperatures, i));
             if (humidities != null && i < humidities.length()) weather.setHumidity(humidities.optInt(i, 0));
             if (weatherCodes != null && i < weatherCodes.length()) {
                 int code = weatherCodes.optInt(i, 0);
@@ -92,7 +134,7 @@ public class OpenMeteoJsonParser {
         if (current != null) {
             currentTimeSec = current.optLong("time", 0);
             weather.setDate(new Date(currentTimeSec * 1000));
-            weather.setTemperature(current.optDouble("temperature", 0) + 273.15);
+            weather.setTemperature(current.optDouble("temperature", 0) + KELVIN_OFFSET);
             int code = current.optInt("weathercode", 0);
             weather.setWeatherId(mapWmoToOwm(code));
             weather.setDescription(mapWmoToDescription(code));
@@ -108,24 +150,9 @@ public class OpenMeteoJsonParser {
         // Open-Meteo current_weather doesn't have humidity/pressure/apparent_temperature, get from hourly if available
         JSONObject hourly = root.optJSONObject("hourly");
         if (hourly != null) {
-            int index = 0;
-            JSONArray timeArray = hourly.optJSONArray("time");
-            if (timeArray != null && timeArray.length() > 0 && currentTimeSec > 0) {
-                for (int i = 0; i < timeArray.length(); i++) {
-                    if (timeArray.optLong(i, -1) == currentTimeSec) {
-                        index = i;
-                        break;
-                    }
-                }
-            }
+            int index = hourlyIndexFor(hourly.optJSONArray("time"), currentTimeSec);
 
-            JSONArray apparentTempArray = hourly.optJSONArray("apparent_temperature");
-            if (apparentTempArray != null && index < apparentTempArray.length()) {
-                double apparentC = apparentTempArray.optDouble(index, Double.NaN);
-                if (!Double.isNaN(apparentC)) {
-                    weather.setFeelsLikeTemperature(apparentC + 273.15);
-                }
-            }
+            weather.setFeelsLikeTemperature(kelvinAt(hourly.optJSONArray("apparent_temperature"), index));
             JSONArray humArray = hourly.optJSONArray("relativehumidity_2m");
             if (humArray != null && index < humArray.length()) {
                 weather.setHumidity(humArray.optInt(index, 0));

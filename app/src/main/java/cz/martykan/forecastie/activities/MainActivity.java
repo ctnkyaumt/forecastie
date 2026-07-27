@@ -382,25 +382,28 @@ public class MainActivity extends BaseActivity implements LocationListener {
         return ParseResult.OK;
     }
 
-    private void updateTodayWeatherUI() {
+    private void updateActionBarTitle() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar == null) {
+            return;
+        }
         String city = todayWeather.getCity();
         String country = todayWeather.getCountry();
         if (city == null) city = "";
         if (country == null) country = "";
 
-        DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getApplicationContext());
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            String title = "";
-            if (!city.isEmpty() && !country.isEmpty()) {
-                title = city + ", " + country;
-            } else if (!city.isEmpty()) {
-                title = city;
-            } else if (!country.isEmpty()) {
-                title = country;
-            }
-            actionBar.setTitle(title);
+        String title;
+        if (!city.isEmpty() && !country.isEmpty()) {
+            title = city + ", " + country;
+        } else {
+            title = city.isEmpty() ? country : city;
         }
+        actionBar.setTitle(title);
+    }
+
+    private void updateTodayWeatherUI() {
+        DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getApplicationContext());
+        updateActionBarTitle();
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
@@ -752,21 +755,54 @@ public class MainActivity extends BaseActivity implements LocationListener {
         weatherStorage.setLatitude(latitude);
         weatherStorage.setLongitude(longitude);
 
-        // Try to get city name using Geocoder
-        try {
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                String cityName = addresses.get(0).getLocality();
-                String countryName = addresses.get(0).getCountryName();
-                if (cityName != null) weatherStorage.setCity(cityName);
-                if (countryName != null) weatherStorage.setCountry(countryName);
-            }
-        } catch (IOException e) {
-            Log.e("Geocoder", "Error getting city name", e);
-        }
+        resolvePlaceName(latitude, longitude);
 
         refreshWeather();
+    }
+
+    /**
+     * Reverse geocodes the coordinates off the UI thread - {@link Geocoder} performs network I/O -
+     * and refreshes the title once a name is found.
+     */
+    private void resolvePlaceName(final double latitude, final double longitude) {
+        if (!Geocoder.isPresent()) {
+            Log.w("Geocoder", "No geocoder backend on this device, keeping the stored place name");
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Address> addresses = new Geocoder(MainActivity.this, Locale.getDefault())
+                            .getFromLocation(latitude, longitude, 1);
+                    if (addresses == null || addresses.isEmpty()) {
+                        return;
+                    }
+                    Address address = addresses.get(0);
+                    // getLocality() is null outside of towns, so fall back to wider areas rather
+                    // than leaving the previous location's name on screen.
+                    String cityName = address.getLocality();
+                    if (cityName == null) cityName = address.getSubAdminArea();
+                    if (cityName == null) cityName = address.getAdminArea();
+                    if (cityName == null) cityName = address.getFeatureName();
+
+                    final String city = cityName;
+                    final String country = address.getCountryName();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (city != null) weatherStorage.setCity(city);
+                            if (country != null) weatherStorage.setCountry(country);
+                            todayWeather.setCity(weatherStorage.getCity());
+                            todayWeather.setCountry(weatherStorage.getCountry());
+                            updateActionBarTitle();
+                        }
+                    });
+                } catch (IOException e) {
+                    Log.e("Geocoder", "Error getting city name", e);
+                }
+            }
+        }).start();
     }
 
     @Override

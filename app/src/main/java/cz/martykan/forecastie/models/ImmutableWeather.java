@@ -104,30 +104,42 @@ public class ImmutableWeather implements Parcelable {
                 } else {
                     // Open-Meteo format
                     JSONObject current = reader.optJSONObject("current_weather");
+                    long currentTimeSec = 0;
                     if (current != null) {
-                        result.temperature = (float) current.optDouble("temperature", Float.MIN_VALUE) + 273.15f;
+                        currentTimeSec = current.optLong("time", 0);
+                        double temperature = current.optDouble("temperature", Double.NaN);
+                        if (!Double.isNaN(temperature)) {
+                            result.temperature = (float) (temperature + 273.15);
+                        }
                     }
                     JSONObject hourly = reader.optJSONObject("hourly");
                     if (hourly != null) {
+                        // The hourly arrays cover the whole day; pick the slot we are currently in
+                        // rather than index 0, which is local midnight.
+                        int index = OpenMeteoJsonParser.hourlyIndexFor(hourly.optJSONArray("time"), currentTimeSec);
+
                         JSONArray apparentTempArray = hourly.optJSONArray("apparent_temperature");
-                        if (apparentTempArray != null && apparentTempArray.length() > 0) {
-                            result.feelsLikeTemperature = (float) apparentTempArray.optDouble(0, Float.MIN_VALUE) + 273.15f;
+                        if (apparentTempArray != null && index < apparentTempArray.length()) {
+                            double apparent = apparentTempArray.optDouble(index, Double.NaN);
+                            if (!Double.isNaN(apparent)) {
+                                result.feelsLikeTemperature = (float) (apparent + 273.15);
+                            }
                         }
                         JSONArray humArray = hourly.optJSONArray("relativehumidity_2m");
-                        if (humArray != null && humArray.length() > 0) {
-                            result.humidity = humArray.optInt(0, -1);
+                        if (humArray != null && index < humArray.length()) {
+                            result.humidity = humArray.optInt(index, -1);
                         }
                         JSONArray pressArray = hourly.optJSONArray("pressure_msl");
-                        if (pressArray != null && pressArray.length() > 0) {
-                            result.pressure = pressArray.optDouble(0, Double.MIN_VALUE);
+                        if (pressArray != null && index < pressArray.length()) {
+                            result.pressure = pressArray.optDouble(index, Double.MIN_VALUE);
                         }
                         JSONArray rainArray = hourly.optJSONArray("rain");
-                        if (rainArray != null && rainArray.length() > 0) {
-                            result.rain = rainArray.optDouble(0, 0);
+                        if (rainArray != null && index < rainArray.length()) {
+                            result.rain = rainArray.optDouble(index, 0);
                         }
                         JSONArray chanceArray = hourly.optJSONArray("precipitation_probability");
-                        if (chanceArray != null && chanceArray.length() > 0) {
-                            result.chanceOfPrecipitation = chanceArray.optDouble(0, -1);
+                        if (chanceArray != null && index < chanceArray.length()) {
+                            result.chanceOfPrecipitation = chanceArray.optDouble(index, -1);
                         }
                     }
                 }
