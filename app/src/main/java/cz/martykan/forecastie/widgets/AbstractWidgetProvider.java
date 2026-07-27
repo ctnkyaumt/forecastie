@@ -1,6 +1,5 @@
 package cz.martykan.forecastie.widgets;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -15,11 +14,14 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Locale;
 
 import cz.martykan.forecastie.AlarmReceiver;
 import cz.martykan.forecastie.R;
@@ -32,7 +34,21 @@ import cz.martykan.forecastie.utils.formatters.WeatherFormatter;
 import cz.martykan.forecastie.weatherapi.WeatherStorage;
 
 public abstract class AbstractWidgetProvider extends AppWidgetProvider {
-    protected static final String ACTION_UPDATE_TIME = "cz.martykan.forecastie.UPDATE_TIME";
+    // Widget updates always run on the main thread, so sharing the (non thread safe) formats is fine.
+    private static final DecimalFormat TEMPERATURE_FORMAT = new DecimalFormat("#.#");
+    private static final DecimalFormat MEASUREMENT_FORMAT = new DecimalFormat("0.0");
+
+    /** Layout inflated for this widget flavour. */
+    @LayoutRes
+    protected abstract int getLayoutId();
+
+    /** Fill the layout with the current weather. Called only when weather data is available. */
+    protected abstract void bindWeather(Context context, RemoteViews remoteViews, Weather weather,
+                                        SharedPreferences sp);
+
+    /** Weather-independent setup (clocks, …). Always called, even without weather data. */
+    protected void bindStatic(Context context, RemoteViews remoteViews, SharedPreferences sp) {
+    }
 
     @Override
     public void onEnabled(Context context) {
@@ -41,23 +57,30 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        if (ACTION_UPDATE_TIME.equals(intent.getAction())) {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            ComponentName provider = new ComponentName(context.getPackageName(), getClass().getName());
-            int ids[] = appWidgetManager.getAppWidgetIds(provider);
-            onUpdate(context, appWidgetManager, ids);
-        } else {
-            super.onReceive(context, intent);
+    public final void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        if (appWidgetIds == null || appWidgetIds.length == 0) {
+            return;
         }
-    }
 
-    @Override
-    public void onDisabled(Context context) {
-        super.onDisabled(context);
+        // Every instance of a given widget renders identical content, so build the views once
+        // and push them to all ids in a single call instead of once per widget.
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), getLayoutId());
+        setTheme(sp, remoteViews);
+        openMainActivity(context, remoteViews);
+        setRefreshButton(context, remoteViews);
 
-        Log.d(this.getClass().getSimpleName(), "Disable updates for this widget");
-        cancelUpdate(context);
+        try {
+            bindStatic(context, remoteViews, sp);
+            Weather weather = getTodayWeather(context);
+            if (weather != null) {
+                bindWeather(context, remoteViews, weather, sp);
+            }
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Error updating widget", e);
+        }
+
+        appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
     }
 
     protected Bitmap getWeatherIcon(Weather weather, Context context) {
@@ -68,29 +91,28 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
 
     @Nullable
     protected Weather getTodayWeather(Context context) {
-        WeatherStorage weatherStorage = new WeatherStorage(context);
-        return weatherStorage.getLastToday();
+        return new WeatherStorage(context).getLastToday();
     }
 
     protected void openMainActivity(Context context, RemoteViews remoteViews) {
         Intent intent = new Intent(context, MainActivity.class);
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
-        }
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, flags);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
+                pendingIntentFlags(PendingIntent.FLAG_UPDATE_CURRENT));
         remoteViews.setOnClickPendingIntent(R.id.widgetRoot, pendingIntent);
     }
 
     protected void setRefreshButton(Context context, RemoteViews remoteViews) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(AlarmReceiver.ACTION_REFRESH);
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
-        }
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, flags);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
+                pendingIntentFlags(PendingIntent.FLAG_UPDATE_CURRENT));
         remoteViews.setOnClickPendingIntent(R.id.widgetButtonRefresh, pendingIntent);
+    }
+
+    private static int pendingIntentFlags(int flags) {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                ? flags | PendingIntent.FLAG_IMMUTABLE
+                : flags;
     }
 
     protected String getFormattedLocation(Weather weather) {
@@ -101,13 +123,8 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
 
         if (!city.isEmpty() && !country.isEmpty()) {
             return city + ", " + country;
-        } else if (!city.isEmpty()) {
-            return city;
-        } else if (!country.isEmpty()) {
-            return country;
-        } else {
-            return "";
         }
+        return city.isEmpty() ? country : city;
     }
 
     protected String localize(SharedPreferences sp, Context context, String preferenceKey,
@@ -123,124 +140,110 @@ public abstract class AbstractWidgetProvider extends AppWidgetProvider {
         updateWidgets(context, ClassicTimeWidgetProvider.class);
     }
 
-    private static void updateWidgets(Context context, Class widgetClass) {
-        Intent intent = new Intent(context.getApplicationContext(), widgetClass)
-                .setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        int[] ids = AppWidgetManager.getInstance(context.getApplicationContext())
-                .getAppWidgetIds(new ComponentName(context.getApplicationContext(), widgetClass));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        context.getApplicationContext().sendBroadcast(intent);
+    private static void updateWidgets(Context context, Class<? extends AbstractWidgetProvider> widgetClass) {
+        Context appContext = context.getApplicationContext();
+        int[] ids = AppWidgetManager.getInstance(appContext)
+                .getAppWidgetIds(new ComponentName(appContext, widgetClass));
+        if (ids.length == 0) {
+            return;
+        }
+        Intent intent = new Intent(appContext, widgetClass)
+                .setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        appContext.sendBroadcast(intent);
     }
 
-    protected void setTheme(Context context, RemoteViews remoteViews) {
-        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("transparentWidget", false)){
-            remoteViews.setInt(R.id.widgetRoot, "setBackgroundResource", R.drawable.widget_card_transparent);
-            return;
-        }
-        String theme = PreferenceManager.getDefaultSharedPreferences(context).getString("theme", "fresh");
-        switch (theme) {
-            case "dark":
-            case "classicdark":
-                remoteViews.setInt(R.id.widgetRoot, "setBackgroundResource", R.drawable.widget_card_dark);
-                break;
-            case "black":
-            case "classicblack":
-                remoteViews.setInt(R.id.widgetRoot, "setBackgroundResource", R.drawable.widget_card_black);
-                break;
-            case "classic":
-                remoteViews.setInt(R.id.widgetRoot, "setBackgroundResource", R.drawable.widget_card_classic);
-                break;
-            default:
-                remoteViews.setInt(R.id.widgetRoot, "setBackgroundResource", R.drawable.widget_card);
-                break;
-        }
-    }
-
-    protected void scheduleNextUpdate(Context context) {
-        if (!shouldUpdate(context)) {
-            cancelUpdate(context);
-            return;
-        }
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        String intervalPref = sp.getString("refreshInterval", "1");
-        long intervalMillis = AlarmReceiver.intervalMillisForRecurringAlarm(intervalPref);
-        if (intervalMillis == 0) {
-            cancelUpdate(context);
-            return;
-        }
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        long now = new Date().getTime();
-        long nextUpdate = now + intervalMillis;
-        if (Build.VERSION.SDK_INT >= 19) {
-            // Check if we can schedule exact alarms
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExact(AlarmManager.RTC, nextUpdate, getTimeIntent(context));
-                } else {
-                    // Fall back to inexact alarm if permission not granted
-                    alarmManager.set(AlarmManager.RTC, nextUpdate, getTimeIntent(context));
-                }
-            } else {
-                alarmManager.setExact(AlarmManager.RTC, nextUpdate, getTimeIntent(context));
-            }
+    protected void setTheme(SharedPreferences sp, RemoteViews remoteViews) {
+        int background;
+        if (sp.getBoolean("transparentWidget", false)) {
+            background = R.drawable.widget_card_transparent;
         } else {
-            alarmManager.set(AlarmManager.RTC, nextUpdate, getTimeIntent(context));
+            switch (sp.getString("theme", "fresh")) {
+                case "dark":
+                case "classicdark":
+                    background = R.drawable.widget_card_dark;
+                    break;
+                case "black":
+                case "classicblack":
+                    background = R.drawable.widget_card_black;
+                    break;
+                case "classic":
+                    background = R.drawable.widget_card_classic;
+                    break;
+                default:
+                    background = R.drawable.widget_card;
+                    break;
+            }
         }
+        remoteViews.setInt(R.id.widgetRoot, "setBackgroundResource", background);
     }
 
-    protected void cancelUpdate(Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(getTimeIntent(context));
-    }
-
-    private boolean shouldUpdate(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return !sp.getString("refreshInterval", "1").equals("0");
-    }
-
-    protected PendingIntent getTimeIntent(Context context) {
-        Intent intent = new Intent(context, this.getClass());
-        intent.setAction(ACTION_UPDATE_TIME);
-        int flags = PendingIntent.FLAG_CANCEL_CURRENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
+    /**
+     * Date-only pattern taken from the user preference. The stored patterns look like
+     * {@code "d.M.yyyy - HH:mm"}, so the time part after the {@code -} is dropped. Missing or
+     * malformed patterns fall back to the locale's long date format. The result is validated
+     * because it is handed to a {@link android.widget.TextClock} living in the launcher process,
+     * where an invalid pattern would crash the widget host instead of us.
+     */
+    @NonNull
+    protected String getDatePattern(Context context, SharedPreferences sp) {
+        String defaultDateFormat = context.getResources().getStringArray(R.array.dateFormatsValues)[0];
+        String pattern = sp.getString("dateFormat", defaultDateFormat);
+        if ("custom".equals(pattern)) {
+            pattern = sp.getString("dateFormatCustom", defaultDateFormat);
         }
-        return PendingIntent.getBroadcast(context, 0, intent, flags);
+        int separator = pattern.indexOf('-');
+        if (separator > 0) {
+            pattern = pattern.substring(0, separator - 1);
+            try {
+                new SimpleDateFormat(pattern, Locale.getDefault());
+                return pattern;
+            } catch (IllegalArgumentException ignored) {
+                // Fall through to the locale default below.
+            }
+        }
+        return android.text.format.DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEEdMMMMy");
+    }
+
+    /**
+     * Binds a {@link android.widget.TextClock}, which then keeps itself ticking in the widget host
+     * without us scheduling any alarms. A {@code null} pattern makes it show the time in the
+     * user's preferred 12/24 hour format.
+     */
+    protected void setClockFormat(RemoteViews remoteViews, int viewId, @Nullable String pattern) {
+        remoteViews.setCharSequence(viewId, "setFormat12Hour", pattern);
+        remoteViews.setCharSequence(viewId, "setFormat24Hour", pattern);
     }
 
     protected String getFormattedTemperature(Weather weather, Context context, SharedPreferences sp) {
-        float temperature = UnitConvertor.convertTemperature((float) weather.getTemperature(), sp);
-        if (sp.getBoolean("temperatureInteger", false)) {
-            temperature = Math.round(temperature);
-        }
-
-        return new DecimalFormat("#.#").format(temperature) + localize(sp, context, "unit", "C");
+        return formatTemperature(UnitConvertor.convertTemperature((float) weather.getTemperature(), sp), context, sp);
     }
 
+    @Nullable
     protected String getFormattedFeelsLikeTemperature(Weather weather, Context context, SharedPreferences sp) {
         if (!weather.isFeelsLikeTemperatureAvailable()) {
             return null;
         }
+        return formatTemperature(UnitConvertor.convertTemperature(weather.getFeelsLikeTemperature().floatValue(), sp), context, sp);
+    }
 
-        float temperature = UnitConvertor.convertTemperature(weather.getFeelsLikeTemperature().floatValue(), sp);
+    private String formatTemperature(float temperature, Context context, SharedPreferences sp) {
         if (sp.getBoolean("temperatureInteger", false)) {
             temperature = Math.round(temperature);
         }
-
-        return new DecimalFormat("#.#").format(temperature) + localize(sp, context, "unit", "C");
+        return TEMPERATURE_FORMAT.format(temperature) + localize(sp, context, "unit", "C");
     }
 
     protected String getFormattedPressure(Weather weather, Context context, SharedPreferences sp) {
         double pressure = UnitConvertor.convertPressure((float) weather.getPressure(), sp);
 
-        return new DecimalFormat("0.0").format(pressure) + " " + localize(sp, context, "pressureUnit", "hPa");
+        return MEASUREMENT_FORMAT.format(pressure) + " " + localize(sp, context, "pressureUnit", "hPa");
     }
 
     protected String getFormattedWind(Weather weather, Context context, SharedPreferences sp) {
         double wind = UnitConvertor.convertWind(weather.getWind(), sp);
 
-        return new DecimalFormat("0.0").format(wind) + " " + localize(sp, context, "speedUnit", "m/s")
+        return MEASUREMENT_FORMAT.format(wind) + " " + localize(sp, context, "speedUnit", "m/s")
                     + (weather.isWindDirectionAvailable() ? " " + MainActivity.getWindDirectionString(sp, context, weather) : "");
     }
 }

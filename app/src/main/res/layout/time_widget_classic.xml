@@ -7,7 +7,8 @@
     android:background="@drawable/widget_card"
     android:padding="8dp">
 
-    <TextView
+    <!-- TextClock keeps itself ticking in the widget host; no alarms needed. -->
+    <TextClock
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,13 +17,15 @@
         android:textSize="48sp"
         tools:text="11:50" />
 
-    <TextView
+    <TextClock
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/time"
         android:layout_centerHorizontal="true"
-        tools:text="Clear Sky"
+        android:format12Hour="EEE d.M.yyyy"
+        android:format24Hour="EEE d.M.yyyy"
+        tools:text="Sun 01.01.2017"
         android:layout_marginTop="-4dp"
         android:layout_marginBottom="8dp"
         android:textColor="@android:color/white"
@@ -134,15 +137,6 @@
                         tools:text="50%"
                         android:textColor="@android:color/white"
                         android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/widgetLastUpdate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@android:color/white"
-                        android:visibility="gone"
-                        tools:text="Last Update: 00:00" />
                 </LinearLayout>
             </LinearLayout>
 

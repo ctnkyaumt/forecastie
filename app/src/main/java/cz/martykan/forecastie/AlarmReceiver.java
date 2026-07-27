@@ -17,6 +17,8 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -68,24 +70,30 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void getWeather() {
         Log.d("Alarm", "Recurring alarm; requesting download service.");
-        if (isNetworkAvailable()) {
+        boolean online = isNetworkAvailable();
+        if (online) {
             if (isUpdateLocation()) {
                 new GetLocationAndWeatherTask().execute();
             } else {
                 new GetWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                new GetLongTermWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
-            // Clear failed flag - tasks will set it in onPostExecute if they fail
-            SharedPreferences.Editor editor =
-                    PreferenceManager.getDefaultSharedPreferences(context).edit();
-            editor.putBoolean("backgroundRefreshFailed", false);
-            editor.apply();
-        } else {
-            SharedPreferences.Editor editor =
-                    PreferenceManager.getDefaultSharedPreferences(context).edit();
-            editor.putBoolean("backgroundRefreshFailed", true);
-            editor.apply();
         }
+        // Cleared up front; the task flags a failure again if the download does not go through.
+        setBackgroundRefreshFailed(!online);
+    }
+
+    private void setBackgroundRefreshFailed(boolean failed) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putBoolean("backgroundRefreshFailed", failed)
+                .apply();
+    }
+
+    private static String weatherUrl(String lat, String lon) {
+        return "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon
+                + "&current_weather=true"
+                + "&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,weathercode,"
+                + "pressure_msl,windspeed_10m,winddirection_10m,rain,snowfall,precipitation_probability"
+                + "&daily=sunrise,sunset,uv_index_max&timezone=auto&timeformat=unixtime";
     }
 
     private boolean isNetworkAvailable() {
@@ -99,115 +107,75 @@ public class AlarmReceiver extends BroadcastReceiver {
         return preferences.getBoolean("updateLocationAutomatically", false);
     }
 
-    public class GetWeatherTask extends AsyncTask<String, String, Void> {
+    /**
+     * Downloads the forecast once and stores it as both the current conditions and the long term
+     * forecast - the Open-Meteo endpoint returns both in a single response.
+     */
+    public class GetWeatherTask extends AsyncTask<String, String, Boolean> {
 
-        protected void onPreExecute() {
+        @Override
+        protected Boolean doInBackground(String... params) {
+            WeatherStorage weatherStorage = new WeatherStorage(context);
+            String lat, lon;
+            if (params.length == 2) {
+                lat = params[0];
+                lon = params[1];
+            } else {
+                lat = Double.toString(weatherStorage.getLatitude(Constants.DEFAULT_LAT));
+                lon = Double.toString(weatherStorage.getLongitude(Constants.DEFAULT_LON));
+            }
 
+            String response = download(weatherUrl(lat, lon));
+            if (response == null) {
+                return false;
+            }
+
+            weatherStorage.setLastToday(response);
+            weatherStorage.setLastLongTerm(response);
+            MainActivity.saveLastUpdateTime(PreferenceManager.getDefaultSharedPreferences(context));
+            return true;
         }
 
         @Override
-        protected Void doInBackground(String... params) {
-            try {
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                WeatherStorage weatherStorage = new WeatherStorage(context);
-                String lat, lon;
-                if (params.length == 2) {
-                    lat = params[0];
-                    lon = params[1];
-                } else {
-                    lat = Double.toString(weatherStorage.getLatitude(Constants.DEFAULT_LAT));
-                    lon = Double.toString(weatherStorage.getLongitude(Constants.DEFAULT_LON));
-                }
-
-                URL url = new URL("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current_weather=true&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,weathercode,pressure_msl,windspeed_10m,winddirection_10m,rain,snowfall,precipitation_probability&daily=sunrise,sunset,uv_index_max&timezone=auto&timeformat=unixtime");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                BufferedReader connectionBufferedReader = null;
-                try {
-                    connectionBufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    if (urlConnection.getResponseCode() == 200) {
-                        StringBuilder result = new StringBuilder();
-                        String line;
-                        while ((line = connectionBufferedReader.readLine()) != null) {
-                            result.append(line).append("\n");
-                        }
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("lastToday", result.toString());
-                        editor.apply();
-                        MainActivity.saveLastUpdateTime(sp);
-                    } else {
-                        // Connection problem
-                    }
-                } finally {
-                    if (connectionBufferedReader != null) connectionBufferedReader.close();
-                }
-            } catch (IOException e) {
-                // No connection
+        protected void onPostExecute(Boolean success) {
+            if (success) {
+                AbstractWidgetProvider.updateWidgets(context);
+            } else {
+                setBackgroundRefreshFailed(true);
             }
-            return null;
         }
 
-        protected void onPostExecute(Void v) {
-            // Update widgets
-            AbstractWidgetProvider.updateWidgets(context);
-        }
-
+        @Override
         protected void onCancelled() {
             // Task was cancelled (e.g. lost network during fetch)
-            SharedPreferences.Editor editor =
-                    PreferenceManager.getDefaultSharedPreferences(context).edit();
-            editor.putBoolean("backgroundRefreshFailed", true);
-            editor.apply();
+            setBackgroundRefreshFailed(true);
         }
     }
 
-    class GetLongTermWeatherTask extends AsyncTask<String, String, Void> {
-
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                WeatherStorage weatherStorage = new WeatherStorage(context);
-                String lat, lon;
-                if (params.length == 2) {
-                    lat = params[0];
-                    lon = params[1];
-                } else {
-                    lat = Double.toString(weatherStorage.getLatitude(Constants.DEFAULT_LAT));
-                    lon = Double.toString(weatherStorage.getLongitude(Constants.DEFAULT_LON));
-                }
-
-                URL url = new URL("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current_weather=true&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,weathercode,pressure_msl,windspeed_10m,winddirection_10m,rain,snowfall,precipitation_probability&daily=sunrise,sunset,uv_index_max&timezone=auto&timeformat=unixtime");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                BufferedReader connectionBufferedReader = null;
-                try {
-                    connectionBufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    if (urlConnection.getResponseCode() == 200) {
-                        StringBuilder result = new StringBuilder();
-                        String line;
-                        while ((line = connectionBufferedReader.readLine()) != null) {
-                            result.append(line).append("\n");
-                        }
-                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                        editor.putString("lastLongterm", result.toString());
-                        editor.apply();
-                    } else {
-                        // Connection problem
-                    }
-                } finally {
-                    if (connectionBufferedReader != null) connectionBufferedReader.close();
-                }
-            } catch (IOException e) {
-                // No connection
+    @Nullable
+    private static String download(String requestUrl) {
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = (HttpURLConnection) new URL(requestUrl).openConnection();
+            if (urlConnection.getResponseCode() != 200) {
+                return null;
             }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            try {
+                StringBuilder result = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line).append("\n");
+                }
+                return result.toString();
+            } finally {
+                reader.close();
+            }
+        } catch (IOException e) {
+            Log.e("Alarm", "Could not download weather", e);
             return null;
-        }
-
-        protected void onPostExecute(Void v) {
-            // Nothing extra needed for long-term task
+        } finally {
+            if (urlConnection != null) urlConnection.disconnect();
         }
     }
 
@@ -260,12 +228,11 @@ public class AlarmReceiver extends BroadcastReceiver {
             Location location = locationListener.getLocation();
             if (location != null) {
                 Log.d(TAG, String.format("Determined location: latitude %f - longitude %f", location.getLatitude(), location.getLongitude()));
-                new GetWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
-                new GetLongTermWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                new GetWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                        String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
             } else {
                 Log.e(TAG, "Couldn't determine location. Using last known location.");
                 new GetWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                new GetLongTermWeatherTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
             try {
                 locationManager.removeUpdates(locationListener);
